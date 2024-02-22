@@ -1,8 +1,6 @@
 class UserController {
   constructor(Users, validator) {
-    // this.User = User;
     this.User = Users;
-    // this.userValidator = validator;
     this.validateUser = validator;
   }
   //ok
