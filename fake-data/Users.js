@@ -1,4 +1,4 @@
-const User = [
+const Users = [
   { id: 1, name: "meysam" },
   { id: 2, name: "leila" },
   { id: 3, name: "pouya" },
@@ -9,4 +9,4 @@ const User = [
   { id: 8, name: "alireza" },
   { id: 9, name: "sara" },
 ];
-module.exports = User;
+module.exports = Users;
