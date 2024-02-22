@@ -18,7 +18,7 @@ app.use(helmet());
 app.use(morgan("tiny"));
 app.use(logger);
 app.use("/api/accounts", accountsRouter);
-// app.use("/api/categories", categoriesRouter);
+app.use("/api/categories", categoriesRouter);
 // app.use("/api/transactions", transactionsRouter);
 app.use("/api/users", usersRouter);
 
