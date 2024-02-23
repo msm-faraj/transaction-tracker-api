@@ -3,18 +3,35 @@ class UserController {
     this.User = Users;
     this.validateUser = validator;
   }
-  //ok
+  // //ok
+  // async createUser(req, res) {
+  //   //Validte received data to create a new user
+  //   const { error } = this.validateUser(req.body);
+  //   if (error) return res.status(400).send(error.message);
+  //   //Create a new user with given data
+  //   const user = {
+  //     id: this.User.length + 1,
+  //     name: req.body.name,
+  //   };
+  //   this.User.push(user);
+  //   res.send(user);
+  // }
+
   async createUser(req, res) {
     //Validte received data to create a new user
     const { error } = this.validateUser(req.body);
     if (error) return res.status(400).send(error.message);
     //Create a new user with given data
-    const user = {
-      id: this.User.length + 1,
-      name: req.body.name,
-    };
-    this.User.push(user);
-    res.send(user);
+    const { username, password, email } = req.body;
+    const newUser = await this.User.create({
+      username: username,
+      password: password,
+      email: email,
+    });
+    return res.json({
+      status: 200,
+      newUser,
+    });
   }
 
   //ok

@@ -1,9 +1,10 @@
 const express = require("express");
 const router = express.Router();
-const Users = require("../fake-data/Users");
+// const Users = require("../fake-data/Users");
+const UserTable = require("../DB/models").User;
 const userValidator = require("../modules/user-validator");
 const Controller = require("../contoroller/user/user");
-const controller = new Controller(Users, userValidator);
+const controller = new Controller(UserTable, userValidator);
 const reqHandler = require("../middleware/req-handel");
 
 router.get("/", reqHandler(controller.getUsers.bind(controller)));
