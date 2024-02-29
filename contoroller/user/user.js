@@ -1,13 +1,20 @@
+const _ = require("lodash");
+const { where } = require("sequelize");
 class UserController {
   constructor(Users, validator) {
     this.User = Users;
     this.validateUser = validator;
   }
-
+  //ok
   async createUser(req, res) {
     //Validte received data to create a new user
     const { error } = this.validateUser(req.body);
     if (error) return res.status(400).send(error.message);
+    ///Check user existance
+    const oldUser = await this.User.findOne({
+      where: { email: req.body.email },
+    });
+    if (oldUser) return res.status(400).send("User already registered.");
     //Create a new user with given data
     const { username, password, email } = req.body;
     const newUser = await this.User.create({
@@ -15,10 +22,7 @@ class UserController {
       password: password,
       email: email,
     });
-    return res.json({
-      status: 200,
-      newUser,
-    });
+    res.send(_.pick(newUser, ["username", "email"]));
   }
 
   //ok
@@ -30,11 +34,10 @@ class UserController {
     const { error } = this.validateUser(req.body);
     if (error) return res.status(400).send(error.message);
     //Update user with sent data
-    user.name = req.body.name;
-    res.send(user);
+    const newUser = await this.User.create({});
   } //!!!
 
-  //ok
+  //
   async deleteUser(req, res) {
     //Look up for the user by given id
     const user = this.User.find((u) => u.id === parseInt(req.params.id));
@@ -46,7 +49,7 @@ class UserController {
     res.send(user);
   } //!!!
 
-  //ok
+  //
   async getUser(req, res) {
     //Look up for the user by given id
     const user = this.User.find((u) => u.id === parseInt(req.params.id));
@@ -56,7 +59,8 @@ class UserController {
 
   //ok
   async getUsers(req, res) {
-    res.send(this.User);
+    const allUsers = await this.User.findAll({});
+    res.send(allUsers);
   } //???
 }
 
