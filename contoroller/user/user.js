@@ -1,4 +1,5 @@
 const _ = require("lodash");
+const bcrypt = require("bcrypt");
 const { where } = require("sequelize");
 class UserController {
   constructor(Users, validator) {
@@ -10,19 +11,23 @@ class UserController {
     //Validte received data to create a new user
     const { error } = this.validateUser(req.body);
     if (error) return res.status(400).send(error.message);
-    ///Check user existance
+    //Check user existance
     const oldUser = await this.User.findOne({
       where: { email: req.body.email },
     });
     if (oldUser) return res.status(400).send("User already registered.");
-    //Create a new user with given data
-    const { username, password, email } = req.body;
+    //Destructure req.body
+    let { username, password, email } = req.body;
+    //hassh the password
+    const salt = await bcrypt.genSalt(10);
+    password = await bcrypt.hash(password, salt);
+    //Save user to the DB
     const newUser = await this.User.create({
       username: username,
       password: password,
       email: email,
     });
-    res.send(_.pick(newUser, ["username", "email"]));
+    res.send(_.pick(newUser, ["id", "username", "email"]));
   }
 
   //ok

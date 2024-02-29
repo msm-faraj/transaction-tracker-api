@@ -5,10 +5,11 @@ const Joi = require("joi");
 const logger = require("./logger");
 const athenticator = require("./authenticator");
 const express = require("express");
+const authRouter = require("./routes/auth");
+const usersRouter = require("./routes/users");
 const accountsRouter = require("./routes/accounts");
 const categoriesRouter = require("./routes/categories");
 const transactionsRouter = require("./routes/transactions");
-const usersRouter = require("./routes/users");
 const app = express();
 const port = process.env.PORT || 3000;
 let fs = require("fs");
@@ -17,10 +18,11 @@ app.use(express.json());
 app.use(helmet());
 app.use(morgan("tiny"));
 app.use(logger);
+app.use("/api/auth", authRouter);
+app.use("/api/users", usersRouter);
 app.use("/api/accounts", accountsRouter);
 app.use("/api/categories", categoriesRouter);
 app.use("/api/transactions", transactionsRouter);
-app.use("/api/users", usersRouter);
 
 //Configuration
 console.log("Application Name: " + config.get("name"));
