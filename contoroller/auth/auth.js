@@ -27,7 +27,7 @@ class AuthController {
     if (!validPassword)
       return res.status(400).send("Invalid email or password.");
 
-    const token = jwt.sign({ id: user.id }, config.get("jwtPrivateKey"));
+    const token = user.generateAuthToken();
 
     res.json({ token: token });
   }

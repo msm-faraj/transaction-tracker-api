@@ -28,7 +28,7 @@ class UserController {
       password: password,
       email: email,
     });
-    const token = jwt.sign({ id: user.id }, config.get("jwtPrivateKey"));
+    const token = user.generateAuthToken();
 
     res
       .header("x-auth-token", token)

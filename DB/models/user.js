@@ -1,4 +1,6 @@
-"use strict";
+const jwt = require("jsonwebtoken");
+const config = require("config");
+
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
   class User extends Model {
@@ -23,5 +25,9 @@ module.exports = (sequelize, DataTypes) => {
       modelName: "User",
     }
   );
+  User.prototype.generateAuthToken = function () {
+    const token = jwt.sign({ id: this.id }, config.get("jwtPrivateKey"));
+    return token;
+  };
   return User;
 };
