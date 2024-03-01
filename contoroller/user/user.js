@@ -1,13 +1,14 @@
+const config = require("config");
 const _ = require("lodash");
 const bcrypt = require("bcrypt");
-const { where } = require("sequelize");
+const jwt = require("jsonwebtoken");
 class UserController {
   constructor(Users, validator) {
     this.User = Users;
     this.validateUser = validator;
   }
   //ok
-  async createUser(req, res) {
+  async create(req, res) {
     //Validte received data to create a new user
     const { error } = this.validateUser(req.body);
     if (error) return res.status(400).send(error.message);
@@ -22,16 +23,20 @@ class UserController {
     const salt = await bcrypt.genSalt(10);
     password = await bcrypt.hash(password, salt);
     //Save user to the DB
-    const newUser = await this.User.create({
+    const user = await this.User.create({
       username: username,
       password: password,
       email: email,
     });
-    res.send(_.pick(newUser, ["id", "username", "email"]));
+    const token = jwt.sign({ id: user.id }, config.get("jwtPrivateKey"));
+
+    res
+      .header("x-auth-token", token)
+      .send(_.pick(user, ["id", "username", "email"]));
   }
 
   //ok
-  async updateUser(req, res) {
+  async update(req, res) {
     //Look up for the user by given id
     const user = this.User.find((u) => u.id === parseInt(req.params.id));
     if (!user) return res.status(404).send("The user was not found");
@@ -43,7 +48,7 @@ class UserController {
   } //!!!
 
   //
-  async deleteUser(req, res) {
+  async delete(req, res) {
     //Look up for the user by given id
     const user = this.User.find((u) => u.id === parseInt(req.params.id));
     if (!user) return res.status(404).send("The user was not found");
@@ -55,7 +60,7 @@ class UserController {
   } //!!!
 
   //
-  async getUser(req, res) {
+  async getOne(req, res) {
     //Look up for the user by given id
     const user = this.User.find((u) => u.id === parseInt(req.params.id));
     if (!user) return res.status(404).send("The user was not found");
@@ -63,7 +68,7 @@ class UserController {
   } //???
 
   //ok
-  async getUsers(req, res) {
+  async getAll(req, res) {
     const allUsers = await this.User.findAll({});
     res.send(allUsers);
   } //???

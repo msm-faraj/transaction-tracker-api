@@ -1,7 +1,6 @@
 const config = require("config");
 const helmet = require("helmet");
 const morgan = require("morgan");
-const Joi = require("joi");
 const logger = require("./logger");
 const athenticator = require("./authenticator");
 const express = require("express");
@@ -12,7 +11,11 @@ const categoriesRouter = require("./routes/categories");
 const transactionsRouter = require("./routes/transactions");
 const app = express();
 const port = process.env.PORT || 3000;
-let fs = require("fs");
+
+if (!config.get("jwtPrivateKey")) {
+  console.error("FATAL ERROR: jwtPrivateKey is not defined.");
+  process.exit(1);
+}
 
 app.use(express.json());
 app.use(helmet());
