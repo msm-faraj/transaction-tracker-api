@@ -4,7 +4,7 @@ class TransactionController {
     this.validateTransaction = validator;
   }
   //ok
-  async createTransaction(req, res) {
+  async create(req, res) {
     //Validte received data to create a new user
     const { error } = this.validateTransaction(req.body);
     if (error) return res.status(400).send(error.message);
@@ -28,7 +28,7 @@ class TransactionController {
     });
   }
   // ok
-  async updateTransaction(req, res) {
+  async update(req, res) {
     //Look up for the user by given id
     const transaction = await this.Transaction.findOne({
       id: `${parseInt(req.params.id)}`,
@@ -42,7 +42,7 @@ class TransactionController {
     res.send(transaction);
   }
 
-  async deleteTransaction(req, res) {
+  async delete(req, res) {
     //Look up for the user by given id
     const transaction = this.Transaction.findOne({
       id: `${parseInt(req.params.id)}`,
@@ -56,7 +56,7 @@ class TransactionController {
     res.send(deletedTransaction);
   }
 
-  async getTransaction(req, res) {
+  async getOne(req, res) {
     //Look up for the user by given id
     const user = this.Transaction.find((u) => u.id === parseInt(req.params.id));
     if (!user) return res.status(404).send("The user was not found");
@@ -64,7 +64,7 @@ class TransactionController {
   } //???
 
   //ok
-  async getTransactions(req, res) {
+  async getAll(req, res) {
     const allTransactions = await this.Transaction.findAll({});
     return res.json({
       status: 200,
