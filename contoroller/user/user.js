@@ -50,28 +50,19 @@ class UserController {
   //
   async delete(req, res) {
     //Look up for the user by given id
-    const user = this.User.find((u) => u.id === parseInt(req.params.id));
+    const user = this.User.findOne({ where: { id: req.user.id } });
     if (!user) return res.status(404).send("The user was not found");
     //Delete a user
-    const index = this.User.indexOf(user);
-    this.User.splice(index, 1);
+
     //Send deleted user to client
     res.send(user);
   } //!!!
 
-  //
-  async getOne(req, res) {
-    //Look up for the user by given id
-    const user = this.User.find((u) => u.id === parseInt(req.params.id));
-    if (!user) return res.status(404).send("The user was not found");
-    res.send(user);
-  } //???
-
   //ok
-  async getAll(req, res) {
-    const allUsers = await this.User.findAll({});
-    res.send(allUsers);
-  } //???
+  async getOne(req, res) {
+    const user = await this.User.findOne({ id: req.user.id });
+    res.send(user);
+  }
 }
 
 module.exports = UserController;

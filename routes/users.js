@@ -1,6 +1,7 @@
-const auth = require("../middleware/auth");
 const express = require("express");
 const router = express.Router();
+const auth = require("../middleware/auth");
+
 // const Users = require("../fake-data/Users");
 const UserTable = require("../DB/models").User;
 const userValidator = require("../modules/user-validator");
@@ -10,8 +11,7 @@ const reqHandler = require("../middleware/req-handel");
 
 router.post("/", reqHandler(controller.create.bind(controller)));
 router.get("/me", auth, reqHandler(controller.getOne.bind(controller)));
-// router.get("/", reqHandler(controller.getAll.bind(controller)));
-// router.put("/:id", reqHandler(controller.update.bind(controller)));
-// router.delete("/:id", reqHandler(controller.delete.bind(controller)));
+router.put("/:id", auth, reqHandler(controller.update.bind(controller)));
+router.delete("/:id", auth, reqHandler(controller.delete.bind(controller)));
 
 module.exports = router;
