@@ -6,4 +6,7 @@ module.exports = {
     host: "localhost",
     dialect: "postgres",
   },
+  production: {
+    dialect: "postgres",
+  },
 };
