@@ -3,7 +3,7 @@ const router = express.Router();
 const auth = require("../middleware/auth");
 
 // const Users = require("../fake-data/Users");
-const UserTable = require("../DB/models").User;
+const UserTable = require("../models").User;
 const userValidator = require("../modules/user-validator");
 const Controller = require("../contoroller/user/user");
 const controller = new Controller(UserTable, userValidator);
