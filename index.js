@@ -30,11 +30,6 @@ app.use("/api/accounts", accountsRouter);
 app.use("/api/categories", categoriesRouter);
 app.use("/api/transactions", transactionsRouter);
 
-//Configuration
-console.log("Application Name: " + config.get("name"));
-console.log("Mail Server: " + config.get("mail.host"));
-// console.log("Mail password: " + config.get("mail.password"));
-
 if (app.get("env") === "development") {
   app.use(athenticator);
   console.log("Morgan enabled...");
