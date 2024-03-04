@@ -25,6 +25,6 @@
   "author": "msm-faraj",
   "license": "ISC",
   "devDependencies": {
-    "sequelize-cli": "^6.6.2"
+    "sequelize-cli": "6.6.2"
   }
 }
