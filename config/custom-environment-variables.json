@@ -1,5 +1,3 @@
 {
-  "mail": {
-    "password": "app_pass_env_var"
-  }
+  "jwtPrivateKey": "expense_tracker_jwtPrivateKey"
 }
