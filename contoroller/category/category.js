@@ -4,20 +4,18 @@ class CategoryController {
     this.validateCategory = validator;
   }
 
-  async createCategory(req, res) {
+  async create(req, res) {
     //Validte received data to create a new user
     const { error } = this.validateCategory(req.body);
     if (error) return res.status(400).send(error.message);
     //Create a new user with given data
-    const user = {
-      id: this.Category.length + 1,
+    const category = await this.Category.create({
       name: req.body.name,
-    };
-    this.Category.push(user);
-    res.send(user);
+    });
+    res.status(200).send(category);
   }
 
-  async updateCategory(req, res) {
+  async update(req, res) {
     //Look up for the user by given id
     const user = this.Category.find((u) => u.id === parseInt(req.params.id));
     if (!user) return res.status(404).send("The user was not found");
@@ -29,7 +27,7 @@ class CategoryController {
     res.send(user);
   }
 
-  async deleteCategory(req, res) {
+  async delete(req, res) {
     //Look up for the user by given id
     const user = this.Category.find((u) => u.id === parseInt(req.params.id));
     if (!user) return res.status(404).send("The user was not found");
@@ -40,15 +38,17 @@ class CategoryController {
     res.send(user);
   }
 
-  async getCategory(req, res) {
-    //Look up for the user by given id
-    const user = this.Category.find((u) => u.id === parseInt(req.params.id));
-    if (!user) return res.status(404).send("The user was not found");
-    res.send(user);
-  } //???
+  async getOne(req, res) {
+    const category = await this.Category.findOne({
+      where: { id: req.params.id },
+    });
+    if (!category) return res.status(404).send("The category was not found");
+    res.send(category);
+  }
 
-  async getCategories(req, res) {
-    res.send(this.Category);
+  async getAll(req, res) {
+    const allCategories = await this.Category.findAll({});
+    return res.status(200).send(allCategories);
   }
 }
 

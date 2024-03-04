@@ -19,15 +19,20 @@ class TransactionController {
       description,
       date,
     } = req.body;
-    const newTransaction = await this.Transaction.create({
+    const transaction = await this.Transaction.create({
       amount: amount,
+      userId: userId,
+      typeId: typeId,
+      accountId: accountId,
+      categoryId: categoryId,
+      note: note,
+      description: description,
+      date: date,
     });
-    return res.json({
-      status: 200,
-      newTransaction,
-    });
+    return res.status(200).send(transaction);
   }
-  // ok
+
+  //
   async update(req, res) {
     //Look up for the user by given id
     const transaction = await this.Transaction.findOne({
@@ -56,20 +61,21 @@ class TransactionController {
     res.send(deletedTransaction);
   }
 
+  //ok
   async getOne(req, res) {
     //Look up for the user by given id
-    const user = this.Transaction.find((u) => u.id === parseInt(req.params.id));
-    if (!user) return res.status(404).send("The user was not found");
-    res.send(user);
-  } //???
+    const transaction = await this.Transaction.findOne({
+      where: { id: req.params.id },
+    });
+    if (!transaction)
+      return res.status(404).send("The transaction was not found");
+    res.send(transaction);
+  }
 
   //ok
   async getAll(req, res) {
     const allTransactions = await this.Transaction.findAll({});
-    return res.json({
-      status: 200,
-      allTransactions,
-    });
+    return res.status(200).send(allTransactions);
   }
 }
 

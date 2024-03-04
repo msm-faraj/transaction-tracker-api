@@ -3,7 +3,7 @@ const Joi = require("joi");
 module.exports = (user) => {
   const schema = Joi.object({
     password: Joi.string()
-      .min(3)
+      .min(5)
       .pattern(new RegExp("^[a-zA-Z0-9]{3,30}$"))
       .required(),
     email: Joi.string()

@@ -4,20 +4,19 @@ class AccountController {
     this.validater = validator;
   }
 
-  async createAccount(req, res) {
+  async create(req, res) {
     //Validte received data to create a new user
     const { error } = this.validater(req.body);
     if (error) return res.status(400).send(error.message);
     //Create a new user with given data
-    const user = {
-      id: this.Account.length + 1,
+    const account = await this.Account.create({
       name: req.body.name,
-    };
-    this.Account.push(user);
-    res.send(user);
+    });
+
+    res.status(200).send(account);
   }
 
-  async updateAccount(req, res) {
+  async update(req, res) {
     //Look up for the user by given id
     const user = this.Account.find((u) => u.id === parseInt(req.params.id));
     if (!user) return res.status(404).send("The user was not found");
@@ -29,7 +28,7 @@ class AccountController {
     res.send(user);
   }
 
-  async deleteAccount(req, res) {
+  async delete(req, res) {
     //Look up for the user by given id
     const user = this.Account.find((u) => u.id === parseInt(req.params.id));
     if (!user) return res.status(404).send("The user was not found");
@@ -40,15 +39,18 @@ class AccountController {
     res.send(user);
   }
 
-  async getAccount(req, res) {
+  async getOne(req, res) {
     //Look up for the user by given id
-    const user = this.Account.find((u) => u.id === parseInt(req.params.id));
-    if (!user) return res.status(404).send("The user was not found");
-    res.send(user);
-  } //???
+    const account = await this.Account.findOne({
+      where: { id: req.params.id },
+    });
+    if (!account) return res.status(404).send("The account was not found");
+    res.send(account);
+  }
 
-  async getAccounts(req, res) {
-    res.send(this.Account);
+  async getAll(req, res) {
+    const allAccounts = await this.Account.findAll({});
+    return res.status(200).send(allAccounts);
   }
 }
 

@@ -1,15 +1,17 @@
+const auth = require("../middleware/auth");
 const express = require("express");
 const router = express.Router();
-const Categories = require("../fake-data/Categories");
+// const Categories = require("../fake-data/Categories");
+const CategoryTable = require("../DB/models").Category;
 const categoryValidator = require("../modules/category-validator");
 const Controller = require("../contoroller/category/category");
-const controller = new Controller(Categories, categoryValidator);
+const controller = new Controller(CategoryTable, categoryValidator);
 const reqHandler = require("../middleware/req-handel");
 
-router.get("/", reqHandler(controller.getCategories.bind(controller)));
-router.get("/:id", reqHandler(controller.getCategory.bind(controller)));
-router.post("/", reqHandler(controller.createCategory.bind(controller)));
-router.put("/:id", reqHandler(controller.updateCategory.bind(controller)));
-router.delete("/:id", reqHandler(controller.deleteCategory.bind(controller)));
+router.post("/", reqHandler(controller.create.bind(controller)));
+router.put("/:id", reqHandler(controller.update.bind(controller)));
+router.delete("/:id", reqHandler(controller.delete.bind(controller)));
+router.get("/:id", reqHandler(controller.getOne.bind(controller)));
+router.get("/", reqHandler(controller.getAll.bind(controller)));
 
 module.exports = router;

@@ -13,17 +13,17 @@ class UserController {
     const { error } = this.validateUser(req.body);
     if (error) return res.status(400).send(error.message);
     //Check user existance
-    const oldUser = await this.User.findOne({
+    let user = await this.User.findOne({
       where: { email: req.body.email },
     });
-    if (oldUser) return res.status(400).send("User already registered.");
+    if (user) return res.status(400).send("User already registered.");
     //Destructure req.body
     let { username, password, email } = req.body;
     //hassh the password
     const salt = await bcrypt.genSalt(10);
     password = await bcrypt.hash(password, salt);
     //Save user to the DB
-    const user = await this.User.create({
+    user = await this.User.create({
       username: username,
       password: password,
       email: email,
@@ -32,35 +32,44 @@ class UserController {
 
     res
       .header("x-auth-token", token)
-      .send(_.pick(user, ["id", "username", "email"]));
+      .send(_.pick(user, ["id", "username", "email", "deletedAt"]));
   }
 
   //ok
   async update(req, res) {
     //Look up for the user by given id
-    const user = this.User.find((u) => u.id === parseInt(req.params.id));
+    const user = await this.User.findOne({ where: { id: req.params.id } });
     if (!user) return res.status(404).send("The user was not found");
     //Validate received data to update a user
     const { error } = this.validateUser(req.body);
     if (error) return res.status(400).send(error.message);
     //Update user with sent data
-    const newUser = await this.User.create({});
+    let { username, password, email } = req.body;
+    const salt = await bcrypt.genSalt(10);
+    password = await bcrypt.hash(password, salt);
+    user.username = username;
+    user.password = password;
+    user.email = email;
+    await user.save();
+    res.send(_.pick(user, ["id", "username", "email", "deletedAt"]));
   } //!!!
 
-  //
+  //ok
   async delete(req, res) {
     //Look up for the user by given id
-    const user = this.User.findOne({ where: { id: req.user.id } });
+    const user = await this.User.findOne({ where: { id: req.params.id } });
     if (!user) return res.status(404).send("The user was not found");
+    if (user.deletedAt !== null) return res.send("Deleted");
     //Delete a user
-
+    user.deletedAt = new Date();
+    await user.save();
     //Send deleted user to client
     res.send(user);
   } //!!!
 
   //ok
   async getOne(req, res) {
-    const user = await this.User.findOne({ id: req.user.id });
+    const user = await this.User.findOne({ where: { id: req.params.id } });
     res.send(user);
   }
 }
