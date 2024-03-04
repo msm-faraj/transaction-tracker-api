@@ -1,3 +1,5 @@
+const Sequelize = require("sequelize");
+const auth = require("./middleware/auth");
 const config = require("config");
 const helmet = require("helmet");
 const morgan = require("morgan");
@@ -21,6 +23,7 @@ app.use(express.json());
 app.use(helmet());
 app.use(morgan("tiny"));
 app.use(logger);
+// app.use(auth);
 app.use("/api/auth", authRouter);
 app.use("/api/users", usersRouter);
 app.use("/api/accounts", accountsRouter);

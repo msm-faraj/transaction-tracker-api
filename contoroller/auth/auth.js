@@ -29,7 +29,7 @@ class AuthController {
 
     const token = user.generateAuthToken();
 
-    res.json({ token: token });
+    res.send(token);
   }
 }
 
