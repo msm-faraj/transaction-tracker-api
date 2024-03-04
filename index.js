@@ -1,4 +1,3 @@
-const Sequelize = require("sequelize");
 const auth = require("./middleware/auth");
 const config = require("config");
 const helmet = require("helmet");
