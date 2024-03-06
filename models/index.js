@@ -13,12 +13,14 @@ let sequelize;
 if (process.env.NODE_ENV === "production") {
   sequelize = new Sequelize(process.env.DATABASE_URL);
 } else {
-  sequelize = new Sequelize(
-    config.database,
-    config.username,
-    config.password,
-    config
-  );
+  sequelize = new Sequelize({
+    database: config.database,
+    username: config.username,
+    password: config.password,
+    host: config.host,
+    dialect: config.dialect,
+    dialectOptions: config.dialectOptions,
+  });
 }
 
 fs.readdirSync(__dirname)
