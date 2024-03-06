@@ -2,7 +2,6 @@ const auth = require("./middleware/auth");
 const config = require("config");
 const helmet = require("helmet");
 const morgan = require("morgan");
-const logger = require("./logger");
 const athenticator = require("./authenticator");
 const express = require("express");
 const authRouter = require("./routes/auth");
