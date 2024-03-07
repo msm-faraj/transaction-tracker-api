@@ -1,7 +1,9 @@
 const config = require("config");
+require("dotenv").config();
 const _ = require("lodash");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
+const { v4: uuidv4 } = require("uuid");
 class UserController {
   constructor(Users, validator) {
     this.User = Users;
@@ -19,11 +21,14 @@ class UserController {
     if (user) return res.status(400).send("User already registered.");
     //Destructure req.body
     let { username, password, email } = req.body;
+    // const id = uuidv4();
+    // console.log(id);
     //hassh the password
     const salt = await bcrypt.genSalt(10);
     password = await bcrypt.hash(password, salt);
     //Save user to the DB
     user = await this.User.create({
+      // id: id,
       username: username,
       password: password,
       email: email,

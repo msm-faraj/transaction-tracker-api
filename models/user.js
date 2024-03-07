@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
 const config = require("config");
+require("dotenv").config();
 
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
@@ -26,7 +27,7 @@ module.exports = (sequelize, DataTypes) => {
     }
   );
   User.prototype.generateAuthToken = function () {
-    const token = jwt.sign({ id: this.id }, config.get("jwtPrivateKey"));
+    const token = jwt.sign({ id: this.id }, process.env.jwtPrivateKey);
     return token;
   };
   return User;
