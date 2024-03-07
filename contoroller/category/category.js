@@ -1,17 +1,21 @@
 class CategoryController {
-  constructor(Category, validator) {
+  constructor(Category, validator, User) {
     this.Category = Category;
     this.validateCategory = validator;
+    this.User = User;
   }
 
   async create(req, res) {
     //Validte received data to create a new user
     const { error } = this.validateCategory(req.body);
     if (error) return res.status(400).send(error.message);
+    //Find the authorized user
+    const user = await this.User.findOne({ where: { id: req.user.id } });
     //Create a new user with given data
     const category = await this.Category.create({
       name: req.body.name,
       typeId: req.body.typeId,
+      userId: user.id,
     });
     res.status(200).send(category);
   }

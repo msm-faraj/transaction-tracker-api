@@ -1,17 +1,21 @@
 class AccountController {
-  constructor(Account, validator) {
+  constructor(Account, validator, User) {
     this.Account = Account;
     this.validater = validator;
+    this.User = User;
   }
 
   async create(req, res) {
     //Validte received data to create a new user
     const { error } = this.validater(req.body);
     if (error) return res.status(400).send(error.message);
+    //Find the authorized user
+    const user = await this.User.findOne({ where: { id: req.user.id } });
     //Create a new user with given data
     const account = await this.Account.create({
       name: req.body.name,
       typeId: req.body.typeId,
+      userId: user.id,
     });
 
     res.status(200).send(account);

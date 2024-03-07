@@ -3,9 +3,14 @@ const express = require("express");
 const router = express.Router();
 // const Transactions = require("../fake-data/Transactions");
 const TransactionTable = require("../models").Transaction;
+const UserTable = require("../models").User;
 const transactionValidator = require("../modules/transaction-validtor");
 const Controller = require("../contoroller/transaction/transaction");
-const controller = new Controller(TransactionTable, transactionValidator);
+const controller = new Controller(
+  TransactionTable,
+  transactionValidator,
+  UserTable
+);
 const reqHandler = require("../middleware/req-handel");
 
 router.post("/", reqHandler(controller.create.bind(controller)));

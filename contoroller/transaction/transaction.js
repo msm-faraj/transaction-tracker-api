@@ -1,27 +1,22 @@
 class TransactionController {
-  constructor(Transactions, validator) {
+  constructor(Transactions, validator, User) {
     this.Transaction = Transactions;
     this.validateTransaction = validator;
+    this.User = User;
   }
   //ok
   async create(req, res) {
     //Validte received data to create a new user
     const { error } = this.validateTransaction(req.body);
     if (error) return res.status(400).send(error.message);
+    //Find the authorized user
+    const user = await this.User.findOne({ where: { id: req.user.id } });
     //Create a new user with given data
-    const {
-      userId,
-      typeId,
-      accountId,
-      categoryId,
-      amount,
-      note,
-      description,
-      date,
-    } = req.body;
+    const { typeId, accountId, categoryId, amount, note, description, date } =
+      req.body;
     const transaction = await this.Transaction.create({
       amount: amount,
-      userId: userId,
+      userId: user.id,
       typeId: typeId,
       accountId: accountId,
       categoryId: categoryId,

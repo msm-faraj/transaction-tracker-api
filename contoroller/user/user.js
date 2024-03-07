@@ -36,7 +36,7 @@ class UserController {
       .send(_.pick(user, ["id", "username", "email", "deletedAt"]));
   }
 
-  //ok
+  //
   async update(req, res) {
     //Look up for the user by given id
     const user = await this.User.findOne({ where: { id: req.params.id } });
@@ -55,7 +55,7 @@ class UserController {
     res.send(_.pick(user, ["id", "username", "email", "deletedAt"]));
   } //!!!
 
-  //ok
+  //
   async delete(req, res) {
     //Look up for the user by given id
     const user = await this.User.findOne({ where: { id: req.params.id } });
@@ -70,8 +70,10 @@ class UserController {
 
   //ok
   async getOne(req, res) {
-    const user = await this.User.findOne({ where: { id: req.params.id } });
-    res.send(user);
+    //find the user by given token to the Headers
+    const user = await this.User.findOne({ where: { id: req.user.id } });
+    //send the username and email of the authorised user
+    res.send(_.pick(user, ["username", "email"]));
   }
 }
 
