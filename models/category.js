@@ -20,7 +20,7 @@ module.exports = (sequelize, DataTypes) => {
         allowNull: false,
       },
       name: DataTypes.STRING,
-      typeId: DataTypes.UUID,
+      typeId: DataTypes.ENUM(["income", "expense"]),
       userId: DataTypes.UUID,
       deletedAt: DataTypes.DATE,
     },

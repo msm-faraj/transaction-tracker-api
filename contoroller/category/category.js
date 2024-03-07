@@ -11,6 +11,7 @@ class CategoryController {
     //Create a new user with given data
     const category = await this.Category.create({
       name: req.body.name,
+      typeId: req.body.typeId,
     });
     res.status(200).send(category);
   }

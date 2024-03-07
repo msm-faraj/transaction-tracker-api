@@ -9,7 +9,7 @@ module.exports = {
         primaryKey: true,
       },
       typeId: {
-        type: Sequelize.INTEGER,
+        type: Sequelize.ENUM(["income", "expense"]),
       },
       accountId: {
         type: Sequelize.UUID,
