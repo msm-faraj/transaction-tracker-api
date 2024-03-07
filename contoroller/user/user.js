@@ -19,6 +19,7 @@ class UserController {
     if (user) return res.status(400).send("User already registered.");
     //Destructure req.body
     let { username, password, email } = req.body;
+
     //hassh the password
     const salt = await bcrypt.genSalt(10);
     password = await bcrypt.hash(password, salt);
