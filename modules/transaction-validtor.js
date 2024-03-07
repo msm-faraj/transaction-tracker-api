@@ -4,7 +4,7 @@ module.exports = (transaction) => {
   const schema = Joi.object({
     amount: Joi.number().required(),
     userId: Joi.number(),
-    typeId: Joi.number(),
+    typeId: Joi.string().valid("expense", "income").required(),
     accountId: Joi.number(),
     categoryId: Joi.string(),
     note: Joi.string(),
