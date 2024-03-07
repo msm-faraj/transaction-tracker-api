@@ -19,12 +19,11 @@ if (!config.get("jwtPrivateKey")) {
 app.use(express.json());
 app.use(helmet());
 app.use(morgan("tiny"));
-// app.use(auth);
 app.use("/api/auth", authRouter);
 app.use("/api/users", usersRouter);
-app.use("/api/accounts", accountsRouter);
-app.use("/api/categories", categoriesRouter);
-app.use("/api/transactions", transactionsRouter);
+app.use("/api/accounts", auth, accountsRouter);
+app.use("/api/categories", auth, categoriesRouter);
+app.use("/api/transactions", auth, transactionsRouter);
 
 if (app.get("env") === "development") {
   app.use(athenticator);

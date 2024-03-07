@@ -3,9 +3,10 @@ const express = require("express");
 const router = express.Router();
 // const Categories = require("../fake-data/Categories");
 const CategoryTable = require("../models").Category;
+const UserTable = require("../models").User;
 const categoryValidator = require("../modules/category-validator");
 const Controller = require("../contoroller/category/category");
-const controller = new Controller(CategoryTable, categoryValidator);
+const controller = new Controller(CategoryTable, categoryValidator, UserTable);
 const reqHandler = require("../middleware/req-handel");
 
 router.post("/", reqHandler(controller.create.bind(controller)));
