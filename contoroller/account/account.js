@@ -5,6 +5,7 @@ class AccountController {
     this.User = User;
   }
 
+  //** OK **//
   async create(req, res) {
     //Validte received data to create a new user
     const { error } = this.validater(req.body);
@@ -52,9 +53,13 @@ class AccountController {
     if (!account) return res.status(404).send("The account was not found");
     res.send(account);
   }
-
+  //** OK **//
   async getAll(req, res) {
-    const allAccounts = await this.Account.findAll({});
+    //Find the authorized user
+    const user = await this.User.findOne({ where: { id: req.user.id } });
+    const allAccounts = await this.Account.findAll({
+      where: { userId: user.id },
+    });
     return res.status(200).send(allAccounts);
   }
 }

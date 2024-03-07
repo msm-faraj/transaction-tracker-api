@@ -67,9 +67,13 @@ class TransactionController {
     res.send(transaction);
   }
 
-  //ok
+  //** OK **//
   async getAll(req, res) {
-    const allTransactions = await this.Transaction.findAll({});
+    //Find the authorized user
+    const user = await this.User.findOne({ where: { id: req.user.id } });
+    const allTransactions = await this.Transaction.findAll({
+      where: { userId: user.id },
+    });
     return res.status(200).send(allTransactions);
   }
 }

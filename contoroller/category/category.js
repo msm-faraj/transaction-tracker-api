@@ -51,8 +51,13 @@ class CategoryController {
     res.send(category);
   }
 
+  //** OK **//
   async getAll(req, res) {
-    const allCategories = await this.Category.findAll({});
+    //Find the authorized user
+    const user = await this.User.findOne({ where: { id: req.user.id } });
+    const allCategories = await this.Category.findAll({
+      where: { userId: user.id },
+    });
     return res.status(200).send(allCategories);
   }
 }
