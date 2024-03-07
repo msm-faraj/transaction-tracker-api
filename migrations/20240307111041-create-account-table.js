@@ -12,7 +12,7 @@ module.exports = {
         type: Sequelize.STRING,
       },
       typeId: {
-        type: Sequelize.UUID,
+        type: Sequelize.ENUM(["income", "expense"]),
       },
       userId: {
         type: Sequelize.UUID,

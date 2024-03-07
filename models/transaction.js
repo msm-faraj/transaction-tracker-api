@@ -18,7 +18,9 @@ module.exports = (sequelize, DataTypes) => {
         defaultValue: DataTypes.UUIDV4,
         allowNull: false,
       },
-      typeId: DataTypes.UUID,
+      typeId: {
+        type: DataTypes.ENUM(["income", "expense"]),
+      },
       userId: DataTypes.UUID,
       accountId: DataTypes.UUID,
       categoryId: DataTypes.UUID,
