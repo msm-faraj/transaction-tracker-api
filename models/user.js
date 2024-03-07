@@ -1,5 +1,5 @@
 const jwt = require("jsonwebtoken");
-const config = require("config");
+// const config = require("config");
 require("dotenv").config();
 
 const { Model } = require("sequelize");
@@ -16,6 +16,12 @@ module.exports = (sequelize, DataTypes) => {
   }
   User.init(
     {
+      id: {
+        type: DataTypes.UUID,
+        primaryKey: true,
+        defaultValue: DataTypes.UUIDV4,
+        allowNull: false,
+      },
       username: DataTypes.STRING,
       email: DataTypes.STRING,
       password: DataTypes.STRING,
