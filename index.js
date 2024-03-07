@@ -1,5 +1,5 @@
 const auth = require("./middleware/auth");
-require("dotenv").config();
+const config = require("config");
 const helmet = require("helmet");
 const morgan = require("morgan");
 const athenticator = require("./authenticator");
@@ -12,7 +12,7 @@ const transactionsRouter = require("./routes/transactions");
 const app = express();
 const port = process.env.PORT || 3000;
 
-if (!process.env.jwtPrivateKey) {
+if (!config.get("jwtPrivateKey")) {
   console.error("FATAL ERROR: jwtPrivateKey is not defined.");
   process.exit(1);
 }

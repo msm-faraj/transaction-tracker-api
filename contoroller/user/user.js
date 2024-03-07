@@ -1,5 +1,4 @@
 const config = require("config");
-require("dotenv").config();
 const _ = require("lodash");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");

@@ -1,9 +1,7 @@
-const jwt = require("jsonwebtoken");
-const config = require("config");
-
+"use strict";
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
-  class User extends Model {
+  class Account extends Model {
     /**
      * Helper method for defining associations.
      * This method is not a part of Sequelize lifecycle.
@@ -13,7 +11,7 @@ module.exports = (sequelize, DataTypes) => {
       // define association here
     }
   }
-  User.init(
+  Account.init(
     {
       id: {
         type: DataTypes.UUID,
@@ -21,19 +19,15 @@ module.exports = (sequelize, DataTypes) => {
         defaultValue: DataTypes.UUIDV4,
         allowNull: false,
       },
-      username: DataTypes.STRING,
-      email: DataTypes.STRING,
-      password: DataTypes.STRING,
+      name: DataTypes.STRING,
+      typeId: DataTypes.UUID,
+      userId: DataTypes.UUID,
       deletedAt: DataTypes.DATE,
     },
     {
       sequelize,
-      modelName: "User",
+      modelName: "Account",
     }
   );
-  User.prototype.generateAuthToken = function () {
-    const token = jwt.sign({ id: this.id }, config.get("jwtPrivateKey"));
-    return token;
-  };
-  return User;
+  return Account;
 };
