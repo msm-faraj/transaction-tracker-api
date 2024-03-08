@@ -1,4 +1,5 @@
 const auth = require("./middleware/auth");
+const cors = require("cors");
 const config = require("config");
 const helmet = require("helmet");
 const morgan = require("morgan");
@@ -16,6 +17,7 @@ if (!config.get("jwtPrivateKey")) {
   console.error("FATAL ERROR: jwtPrivateKey is not defined.");
   process.exit(1);
 }
+app.use(cors());
 app.use(express.json());
 app.use(helmet());
 app.use(morgan("tiny"));
