@@ -28,8 +28,9 @@ class AuthController {
       return res.status(400).send("Invalid email or password.");
 
     const token = user.generateAuthToken();
+    const tokenObj = { token: token };
 
-    res.send(token);
+    res.send(tokenObj);
   }
 }
 
