@@ -30,10 +30,11 @@ class UserController {
       email: email,
     });
     const token = user.generateAuthToken();
+    user.token = token;
 
     res
       .header("x-auth-token", token)
-      .send(_.pick(user, ["id", "username", "email", "deletedAt"]));
+      .send(_.pick(user, ["id", "username", "email", "deletedAt", "token"]));
   }
 
   //
