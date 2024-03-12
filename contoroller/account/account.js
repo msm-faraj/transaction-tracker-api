@@ -15,7 +15,7 @@ class AccountController {
     //Create a new user with given data
     const account = await this.Account.create({
       name: req.body.name,
-      typeId: req.body.typeId,
+      type: req.body.type,
       userId: user.id,
     });
 

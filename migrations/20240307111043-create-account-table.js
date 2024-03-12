@@ -11,8 +11,9 @@ module.exports = {
       name: {
         type: Sequelize.STRING,
       },
-      typeId: {
+      type: {
         type: Sequelize.ENUM(["income", "expense"]),
+        allowNull: false,
       },
       userId: {
         type: Sequelize.UUID,
