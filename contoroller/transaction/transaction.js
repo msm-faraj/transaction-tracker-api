@@ -12,12 +12,12 @@ class TransactionController {
     //Find the authorized user
     const user = await this.User.findOne({ where: { id: req.user.id } });
     //Create a new user with given data
-    const { typeId, accountId, categoryId, amount, note, description, date } =
+    const { type, accountId, categoryId, amount, note, description, date } =
       req.body;
     const transaction = await this.Transaction.create({
       amount: amount,
       userId: user.id,
-      typeId: typeId,
+      type: type,
       accountId: accountId,
       categoryId: categoryId,
       note: note,
