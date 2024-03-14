@@ -43,12 +43,15 @@ class CategoryController {
     res.send(user);
   }
 
-  async getOne(req, res) {
-    const category = await this.Category.findOne({
-      where: { id: req.params.id },
+  //** OK **//
+  async getSome(req, res) {
+    const user = await this.User.findOne({ where: { id: req.user.id } });
+    const someCategories = await this.Category.findAll({
+      where: { type: req.params.type },
     });
-    if (!category) return res.status(404).send("The category was not found");
-    res.send(category);
+    if (!someCategories)
+      return res.status(404).send("The categories was not found");
+    return res.status(200).send(someCategories);
   }
 
   //** OK **//
@@ -56,8 +59,9 @@ class CategoryController {
     //Find the authorized user
     const user = await this.User.findOne({ where: { id: req.user.id } });
     const allCategories = await this.Category.findAll({
-      where: { userId: user.id },
+      where: { userId: user.id, type: req.query.type },
     });
+    console.log(req.params);
     return res.status(200).send(allCategories);
   }
 }
