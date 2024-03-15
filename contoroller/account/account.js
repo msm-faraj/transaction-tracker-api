@@ -33,25 +33,16 @@ class AccountController {
     res.send(user);
   }
 
+  //** OK **//
   async delete(req, res) {
     //Look up for the user by given id
-    const user = this.Account.find((u) => u.id === parseInt(req.params.id));
-    if (!user) return res.status(404).send("The user was not found");
-    //Delete a user
-    const index = this.Account.indexOf(user);
-    this.Account.splice(index, 1);
-    //Send deleted user to client
-    res.send(user);
-  }
-
-  async getOne(req, res) {
-    //Look up for the user by given id
-    const account = await this.Account.findOne({
+    const deletedAccount = await this.Account.destroy({
       where: { id: req.params.id },
     });
-    if (!account) return res.status(404).send("The account was not found");
-    res.send(account);
+
+    return res.send("deleted");
   }
+
   //** OK **//
   async getAll(req, res) {
     //Find the authorized user
