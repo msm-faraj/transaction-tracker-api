@@ -32,15 +32,14 @@ class CategoryController {
     res.send(user);
   }
 
+  //** OK **//
   async delete(req, res) {
     //Look up for the user by given id
-    const user = this.Category.find((u) => u.id === parseInt(req.params.id));
-    if (!user) return res.status(404).send("The user was not found");
-    //Delete a user
-    const index = this.Category.indexOf(user);
-    this.Category.splice(index, 1);
-    //Send deleted user to client
-    res.send(user);
+    const deletedAccount = await this.Category.destroy({
+      where: { id: req.params.id },
+    });
+
+    return res.send("deleted");
   }
 
   //** OK **//
