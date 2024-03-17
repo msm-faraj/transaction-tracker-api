@@ -19,7 +19,10 @@ module.exports = (sequelize, DataTypes) => {
         defaultValue: DataTypes.UUIDV4,
         allowNull: false,
       },
-      name: DataTypes.STRING,
+      name: {
+        type: DataTypes.STRING,
+        // unique: true,
+      },
       type: DataTypes.ENUM(["income", "expense"]),
       userId: DataTypes.UUID,
       deletedAt: DataTypes.DATE,
