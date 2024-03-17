@@ -14,19 +14,22 @@ class TransactionController {
     //Find the authorized user
     const user = await this.User.findOne({ where: { id: req.user.id } });
     //Find the used account for transaction
-    const usedAcount = await this.Account.findOne({
-      where: { name: req.body.account },
+    const usedAccount = await this.Account.findOne({
+      where: {
+        userId: user.id,
+        name: req.body.account,
+      },
     });
     //Find the used category for transaction
     const usedCategory = await this.Category.findOne({
       where: { name: req.body.category },
     });
-    console.log(usedAcount.name);
+    console.log(usedAccount.name);
     //Create a new user with given data
     const { type, account, categoryId, amount, note, description, date } =
       req.body;
     const transaction = await this.Transaction.create({
-      accountId: usedAcount.id,
+      accountId: usedAccount.id,
       categoryId: usedCategory.id,
       type: type,
       note: note,

@@ -11,6 +11,19 @@ class CategoryController {
     if (error) return res.status(400).send(error.message);
     //Find the authorized user
     const user = await this.User.findOne({ where: { id: req.user.id } });
+
+    //Prevent duplication in category table for a user
+    const existingCategory = await this.Category.findOne({
+      where: {
+        userId: user.id,
+        name: req.body.name,
+        type: req.body.type,
+      },
+    });
+    if (existingCategory) {
+      return res.send("this category has been defined");
+    }
+
     //Create a new user with given data
     const category = await this.Category.create({
       name: req.body.name,

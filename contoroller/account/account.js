@@ -12,6 +12,16 @@ class AccountController {
     if (error) return res.status(400).send(error.message);
     //Find the authorized user
     const user = await this.User.findOne({ where: { id: req.user.id } });
+    //Prevent duplication in account table for a user
+    const existingAccount = await this.Account.findOne({
+      where: {
+        userId: user.id,
+        name: req.body.name,
+      },
+    });
+    if (existingAccount) {
+      return res.send("this account has been defined");
+    }
     //Create a new user with given data
     const account = await this.Account.create({
       name: req.body.name,
