@@ -1,8 +1,10 @@
 class TransactionController {
-  constructor(Transactions, validator, User) {
+  constructor(Transactions, validator, User, Account, Category) {
     this.Transaction = Transactions;
     this.validateTransaction = validator;
     this.User = User;
+    this.Account = Account;
+    this.Category = Category;
   }
   //ok
   async create(req, res) {
@@ -11,18 +13,27 @@ class TransactionController {
     if (error) return res.status(400).send(error.message);
     //Find the authorized user
     const user = await this.User.findOne({ where: { id: req.user.id } });
+    //Find the used account for transaction
+    const usedAcount = await this.Account.findOne({
+      where: { name: req.body.account },
+    });
+    //Find the used category for transaction
+    const usedCategory = await this.Category.findOne({
+      where: { name: req.body.category },
+    });
+    console.log(usedAcount.name);
     //Create a new user with given data
-    const { type, accountId, categoryId, amount, note, description, date } =
+    const { type, account, categoryId, amount, note, description, date } =
       req.body;
     const transaction = await this.Transaction.create({
+      accountId: usedAcount.id,
+      categoryId: usedCategory.id,
+      type: type,
+      note: note,
+      date: date,
       amount: amount,
       userId: user.id,
-      type: type,
-      accountId: accountId,
-      categoryId: categoryId,
-      note: note,
       description: description,
-      date: date,
     });
     return res.status(200).send(transaction);
   }

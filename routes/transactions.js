@@ -4,12 +4,16 @@ const router = express.Router();
 // const Transactions = require("../fake-data/Transactions");
 const TransactionTable = require("../models").Transaction;
 const UserTable = require("../models").User;
+const AccountTable = require("../models").Account;
+const CategoryTable = require("../models").Category;
 const transactionValidator = require("../modules/transaction-validtor");
 const Controller = require("../contoroller/transaction/transaction");
 const controller = new Controller(
   TransactionTable,
   transactionValidator,
-  UserTable
+  UserTable,
+  AccountTable,
+  CategoryTable
 );
 const reqHandler = require("../middleware/req-handel");
 
