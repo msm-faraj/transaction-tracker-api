@@ -1,5 +1,6 @@
 const jwt = require("jsonwebtoken");
-const config = require("config");
+// const config = require("config");
+const config = require("dotenv").config();
 
 const { Model } = require("sequelize");
 module.exports = (sequelize, DataTypes) => {
@@ -10,7 +11,10 @@ module.exports = (sequelize, DataTypes) => {
      * The `models/index` file will call this method automatically.
      */
     static associate(models) {
-      // define association here
+      User.hasMany(models.Transaction, {
+        as: "transactions",
+        foreignKey: "userId",
+      });
     }
   }
   User.init(
@@ -32,7 +36,10 @@ module.exports = (sequelize, DataTypes) => {
     }
   );
   User.prototype.generateAuthToken = function () {
-    const token = jwt.sign({ id: this.id }, config.get("jwtPrivateKey"));
+    const token = jwt.sign(
+      { id: this.id },
+      process.env.expense_tracker_jwtPrivateKey
+    );
     return token;
   };
   return User;

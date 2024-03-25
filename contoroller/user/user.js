@@ -1,4 +1,3 @@
-const config = require("config");
 const _ = require("lodash");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
