@@ -12,6 +12,11 @@ module.exports = (sequelize, DataTypes) => {
       Account.belongsTo(models.User, {
         as: "user",
         foreignKey: "userId",
+        onDelete: "cascade",
+      });
+      Account.hasMany(models.Transaction, {
+        as: "transactions",
+        foreignKey: "accountId",
       });
     }
   }
