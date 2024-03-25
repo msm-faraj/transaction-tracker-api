@@ -1,0 +1,44 @@
+services:
+  server:
+    # this is going to run docker file on this directory
+    # also it create a container with default name of (thidDirectinName-server)
+    build: ./
+    # this is going to set container name for that dockerfile
+    container_name: tt-server-cnt
+    # this is going to set environment variables of app
+    environment:
+      - transaction_tracker_jwtPrivateKey=myNewKey
+      - DEV_DB_HOST=tt-postgres-cnt
+      - DEV_DB_DATABASE=postgres
+      - DEV_DB_USERNAME=postgres
+      - DEV_DB_PASSWORD=1234
+    networks:
+      - tt-net
+    ports:
+      - 3000:3000
+      # this is going to make a src folder in root of container file system
+      # and copy all files in root of ./ (this folder)
+      # this is not going to be separate volum in dockerfile
+    volumes:
+      - ./:/src
+  postgres_db_dev:
+    image: postgres:16.2
+    restart: always
+    container_name: tt-postgres-cnt
+    environment:
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_USER: postgres
+      POSTGRES_DATABASE_NAME: postgres
+      DEV_DB_HOST: tt-server-cnt
+    ports:
+      - 5432:5432
+    volumes:
+      - postgres_db_dev:/var/lib/postgres/data
+    networks:
+      - tt-net
+volumes:
+  postgres_db_dev:
+    driver: local
+networks:
+  tt-net:
+    driver: "bridge"
