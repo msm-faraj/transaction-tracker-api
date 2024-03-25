@@ -11,6 +11,17 @@ module.exports = (sequelize, DataTypes) => {
       Transaction.belongsTo(models.User, {
         as: "user",
         foreignKey: "userId",
+        onDelete: "cascade",
+      });
+      Transaction.belongsTo(models.Account, {
+        as: "acount",
+        foreignKey: "accountId",
+        onDelete: "cascade",
+      });
+      Transaction.belongsTo(models.Category, {
+        as: "account",
+        foreignKey: "categoryId",
+        onDelete: "cascade",
       });
     }
   }

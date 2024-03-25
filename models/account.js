@@ -9,6 +9,15 @@ module.exports = (sequelize, DataTypes) => {
      */
     static associate(models) {
       // define association here
+      Account.belongsTo(models.User, {
+        as: "user",
+        foreignKey: "userId",
+        onDelete: "cascade",
+      });
+      Account.hasMany(models.Transaction, {
+        as: "transactions",
+        foreignKey: "accountId",
+      });
     }
   }
   Account.init(

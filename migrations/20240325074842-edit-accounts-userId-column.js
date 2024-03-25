@@ -1,7 +1,8 @@
 /** @type {import('sequelize-cli').Migration} */
 module.exports = {
   async up(queryInterface, Sequelize) {
-    await queryInterface.changeColumn("Transactions", "userId", {
+    //Change userId column of accounts to set association with user
+    await queryInterface.changeColumn("Accounts", "userId", {
       type: Sequelize.UUID,
       allowNull: false,
       references: {
@@ -12,7 +13,7 @@ module.exports = {
   },
 
   async down(queryInterface, Sequelize) {
-    await queryInterface.changeColumn("Transactions", "userId", {
+    await queryInterface.changeColumn("Accounts", "userId", {
       type: Sequelize.UUID,
     });
   },

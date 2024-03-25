@@ -65,7 +65,7 @@ class UserController {
     user.deletedAt = new Date();
     await user.save();
     //Send deleted user to client
-    res.send(user);
+    res.send(_.pick(user, ["id", "username", "email", "deletedAt"]));
   } //!!!
 
   //ok
