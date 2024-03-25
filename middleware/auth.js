@@ -9,7 +9,7 @@ module.exports = function (req, res, next) {
   try {
     const decoded = jwt.verify(
       token,
-      process.env.expense_tracker_jwtPrivateKey
+      process.env.transaction_tracker_jwtPrivateKey
     );
     req.user = decoded;
     next();
