@@ -13,6 +13,9 @@ class TransactionController {
     if (error) return res.status(400).send(error.message);
     //Find the authorized user
     const user = await this.User.findOne({ where: { id: req.user.id } });
+    if (!user) {
+      return res.send("user not founded");
+    }
     //Find the used account for transaction
     const usedAccount = await this.Account.findOne({
       where: {
@@ -20,10 +23,16 @@ class TransactionController {
         name: req.body.account,
       },
     });
+    if (!usedAccount) {
+      return res.send("account not founded");
+    }
     //Find the used category for transaction
     const usedCategory = await this.Category.findOne({
       where: { name: req.body.category },
     });
+    if (!usedCategory) {
+      return res.send("category not founded...");
+    }
     console.log(usedAccount.name);
     //Create a new user with given data
     const { type, account, categoryId, amount, note, description, date } =

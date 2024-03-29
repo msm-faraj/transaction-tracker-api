@@ -1,0 +1,45 @@
+services:
+  postgres:
+    # Ussing | Pulling this image as base image
+    image: postgres:16.2
+    restart: always
+    # setting DB container name
+    container_name: postgres-cnt
+    # Setting envoronment variable for DB
+    environment:
+      POSTGRES_PASSWORD: 1234
+      POSTGRES_USER: postgres
+      DEV_DB_HOST: tt-server-cnt
+      POSTGRES_DATABASE_NAME: postgres
+    volumes:
+      - db:/var/lib/postgresql/data
+    ports:
+      - 5432:5432
+    networks:
+      - tt-net
+  server:
+    # this is going to run docker file on this directory
+    # also it create a container with default name of (thidDirectinName-server)
+    build: ./
+    # this is going to set container name for that dockerfile
+    container_name: server-cnt
+    # Setting needed env vars for application to work
+    environment:
+      - DEV_DB_PASSWORD=1234
+      - DEV_DB_DATABASE=postgres
+      - DEV_DB_USERNAME=postgres
+      - DEV_DB_HOST=postgres-cnt
+      - transaction_tracker_jwtPrivateKey=myNewKey
+    networks:
+      - tt-net
+    ports:
+      - 3000:3000
+    volumes:
+      - ./src:/transaction-tracker-api/src
+
+volumes:
+  db:
+    driver: local
+networks:
+  tt-net:
+    driver: "bridge"

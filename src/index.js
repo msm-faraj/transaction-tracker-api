@@ -34,3 +34,5 @@ if (app.get("env") === "development") {
 app.listen(port, () => {
   console.log(`React-Expence-Tracker listening of port ${port}`);
 });
+
+console.log("hey");
