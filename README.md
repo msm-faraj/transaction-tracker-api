@@ -1,3 +1,1 @@
-# React-Expence-Tracker-API
-
-this an app
+# Transaction-Tracker-API
