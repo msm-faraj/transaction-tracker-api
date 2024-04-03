@@ -15,7 +15,7 @@ class UserController {
     let { username, password, email } = req.body;
     //Checking user existance with email
     let user = await this.User.findOne({
-      where: { email: email },
+      where: { email },
     });
     if (user) return res.status(400).send("User already registered.");
     //hashing the password
@@ -41,37 +41,31 @@ class UserController {
     //Find the authorized user
     const user = await this.User.findOne({ where: { id: req.user.id } });
     if (!user) {
-      return res.send("user not founded");
+      return res.status(404).send("user not founded");
     }
-    return res.send("hey");
-    // //Look up for the user by given id
-    // const user = await this.User.findOne({ where: { id: req.params.id } });
-    // if (!user) return res.status(404).send("The user was not found");
-    // //Validate received data to update a user
-    // const { error } = this.validateUser(req.body);
-    // if (error) return res.status(400).send(error.message);
-    // //Update user with sent data
-    // let { username, password, email } = req.body;
-    // const salt = await bcrypt.genSalt(10);
-    // password = await bcrypt.hash(password, salt);
-    // user.username = username;
-    // user.password = password;
-    // user.email = email;
-    // await user.save();
-    // res.send(_.pick(user, ["id", "username", "email", "deletedAt"]));
-  } //!!!
+    //Validate received data to update a user
+    const { error } = this.validateUser(req.body);
+    if (error) return res.status(400).send(error.message);
+    //Update user with sent data
+    let { username, password } = req.body;
+    const salt = await bcrypt.genSalt(10);
+    password = await bcrypt.hash(password, salt);
+    user.username = username;
+    await user.save();
+    res.send(_.pick(user, ["id", "username", "email"]));
+  }
 
   //ok
   async delete(req, res) {
     //Find the authorized user
     const user = await this.User.findOne({ where: { id: req.user.id } });
     if (!user) {
-      return res.send("user not founded");
+      return res.status(204);
     }
     if (user.deletedAt !== null) return res.send("Deleted");
     //Delete a user
     user.deletedAt = new Date();
-    user.email = user.email + "%";
+    user.email = "deleted_" + user.email;
     await user.save();
     //Send deleted user to client
     return res.send("Deleted");
