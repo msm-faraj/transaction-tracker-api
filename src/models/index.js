@@ -8,9 +8,6 @@ const config = require(__dirname + "/../config/config.js")[env];
 const db = {};
 
 let sequelize;
-// if (process.env.NODE_ENV === "production") {
-// sequelize = new Sequelize(process.env.DATABASE_URL);
-// } else {
 sequelize = new Sequelize({
   database: config.database,
   username: config.username,
@@ -19,7 +16,15 @@ sequelize = new Sequelize({
   dialect: config.dialect,
   dialectOptions: config.dialectOptions,
 });
-// }
+
+(async function connectionTest() {
+  try {
+    await sequelize.authenticate();
+    console.log("Database connection has established successfully. ");
+  } catch (err) {
+    console.error("Unable to connect to the database: ", err);
+  }
+})();
 
 fs.readdirSync(__dirname)
   .filter((file) => {

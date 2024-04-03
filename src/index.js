@@ -21,7 +21,7 @@ app.use(cors());
 app.use(express.json());
 app.use(helmet());
 app.use(morgan("tiny"));
-app.use("/api/auth", authRouter);
+app.use("/api/login", authRouter);
 app.use("/api/users", usersRouter);
 app.use("/api/accounts", auth, accountsRouter);
 app.use("/api/categories", auth, categoriesRouter);
@@ -34,5 +34,3 @@ if (app.get("env") === "development") {
 app.listen(port, () => {
   console.log(`React-Expence-Tracker listening of port ${port}`);
 });
-
-console.log("hey");

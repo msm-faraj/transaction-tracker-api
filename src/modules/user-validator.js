@@ -5,10 +5,10 @@ module.exports = (user) => {
     username: Joi.string()
       .min(3)
       .max(50)
-      .required()
       .pattern(new RegExp("^[a-zA-Z][a-zA-Z0-9-_]{3,23}$")),
     password: Joi.string()
       .min(6)
+      .required()
       .pattern(
         new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[!@#$%]).{8,24}$")
       ),

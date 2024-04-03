@@ -30,13 +30,14 @@ class UserController {
     //Generatting token
     const token = user.generateAuthToken();
     user.token = token;
+    await user.save();
     //Response to client
     res
       .header("x-auth-token", token)
-      .send(_.pick(user, ["id", "username", "email", "token"]));
+      .send(_.pick(user, ["id", "username", "email"]));
   }
 
-  //
+  //ok
   async update(req, res) {
     //Find the authorized user
     const user = await this.User.findOne({ where: { id: req.user.id } });
@@ -47,10 +48,12 @@ class UserController {
     const { error } = this.validateUser(req.body);
     if (error) return res.status(400).send(error.message);
     //Update user with sent data
-    let { username, password } = req.body;
+    let { email, username, password } = req.body;
     const salt = await bcrypt.genSalt(10);
     password = await bcrypt.hash(password, salt);
     user.username = username;
+    user.email = email;
+    user.password = password;
     await user.save();
     res.send(_.pick(user, ["id", "username", "email"]));
   }
@@ -59,10 +62,10 @@ class UserController {
   async delete(req, res) {
     //Find the authorized user
     const user = await this.User.findOne({ where: { id: req.user.id } });
-    if (!user) {
+    if (!user || user.deletedAt !== null) {
       return res.status(204);
     }
-    if (user.deletedAt !== null) return res.send("Deleted");
+    // if (user.deletedAt !== null) return res.send("Deleted");
     //Delete a user
     user.deletedAt = new Date();
     user.email = "deleted_" + user.email;
@@ -76,7 +79,8 @@ class UserController {
     //find the user by given token to the Headers
     const user = await this.User.findOne({ where: { id: req.user.id } });
     //Checking for deletation of the user
-    if (user.deletedAt !== null) return res.send("user not founded");
+    if (user.deletedAt !== null)
+      return res.status(404).send("user not founded");
     //send the username and email of the authorised user
     res.send(_.pick(user, ["username", "email"]));
   }

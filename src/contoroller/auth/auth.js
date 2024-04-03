@@ -11,11 +11,11 @@ class AuthController {
     if (error) return res.status(400).send(error.message);
 
     //Destructure req.body
-    let { username, password, email } = req.body;
+    let { password, email } = req.body;
 
     //Validate email
     let user = await this.User.findOne({
-      where: { email: email },
+      where: { email },
     });
     if (!user) return res.status(400).send("Invalid email or password.");
 
@@ -25,9 +25,8 @@ class AuthController {
       return res.status(400).send("Invalid email or password.");
 
     const token = user.generateAuthToken();
-    const tokenObj = { token: token };
 
-    res.send(tokenObj);
+    res.json({ accessToken: token });
   }
 }
 
