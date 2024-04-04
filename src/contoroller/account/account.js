@@ -1,3 +1,5 @@
+const _ = require("lodash");
+
 class AccountController {
   constructor(Account, validator, User) {
     this.Account = Account;
@@ -7,12 +9,12 @@ class AccountController {
 
   //** OK **//
   async create(req, res) {
-    //Validte received data to create a new user
+    //Validte received data to create a new account
     const { error } = this.validater(req.body);
     if (error) return res.status(400).send(error.message);
     //Find the authorized user
     const user = await this.User.findOne({ where: { id: req.user.id } });
-    //Prevent duplication in account table for a user
+    //Prevent duplication in account table for a account
     const existingAccount = await this.Account.findOne({
       where: {
         userId: user.id,
@@ -31,26 +33,30 @@ class AccountController {
     res.status(200).send(account);
   }
 
+  //** OK **//
   async update(req, res) {
-    //Look up for the user by given id
-    const user = this.Account.find((u) => u.id === parseInt(req.params.id));
-    if (!user) return res.status(404).send("The user was not found");
-    //Validate received data to update a user
+    //Validte received data to update the account
     const { error } = this.validater(req.body);
     if (error) return res.status(400).send(error.message);
-    //Update user with sent data
-    user.name = req.body.name;
-    res.send(user);
+    //Look up for the account by given id
+    const account = await this.Account.findOne({
+      where: { id: req.params.id },
+    });
+    account.name = req.body.name;
+    await account.save();
+    return res.send(_.pick(account, ["name"]));
   }
 
   //** OK **//
   async delete(req, res) {
-    //Look up for the user by given id
-    const deletedAccount = await this.Account.destroy({
+    //Look up for the account by given id
+    const account = await this.Account.findOne({
       where: { id: req.params.id },
     });
-
-    return res.send("deleted");
+    account.deletedAt = new Date();
+    account.name = "deleted_" + account.name;
+    await account.save();
+    return res.send("Deleted");
   }
 
   //** OK **//
@@ -58,7 +64,7 @@ class AccountController {
     //Find the authorized user
     const user = await this.User.findOne({ where: { id: req.user.id } });
     const allAccounts = await this.Account.findAll({
-      where: { userId: user.id },
+      where: { userId: user.id, deletedAt: null },
     });
     return res.status(200).send(allAccounts);
   }

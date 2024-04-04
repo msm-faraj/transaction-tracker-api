@@ -1,3 +1,5 @@
+const _ = require("lodash");
+
 class CategoryController {
   constructor(Category, validator, User) {
     this.Category = Category;
@@ -6,7 +8,7 @@ class CategoryController {
   }
 
   async create(req, res) {
-    //Validte received data to create a new user
+    //Validte received data to create a new category
     const { error } = this.validateCategory(req.body);
     if (error) return res.status(400).send(error.message);
     //Find the authorized user

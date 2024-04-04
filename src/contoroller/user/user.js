@@ -55,7 +55,7 @@ class UserController {
     user.email = email;
     user.password = password;
     await user.save();
-    res.send(_.pick(user, ["id", "username", "email"]));
+    return res.send(_.pick(user, ["id", "username", "email"]));
   }
 
   //ok
@@ -72,7 +72,7 @@ class UserController {
     await user.save();
     //Send deleted user to client
     return res.send("Deleted");
-  } //!!!
+  }
 
   //ok
   async getOne(req, res) {
