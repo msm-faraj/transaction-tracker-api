@@ -17,7 +17,7 @@ class UserController {
     let user = await this.User.findOne({
       where: { email },
     });
-    if (user) return res.status(400).send("User already registered.");
+    if (user) return res.status(409).send("User already registered.");
     //hashing the password
     const salt = await bcrypt.genSalt(10);
     password = await bcrypt.hash(password, salt);
