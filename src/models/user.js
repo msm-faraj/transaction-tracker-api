@@ -37,6 +37,7 @@ module.exports = (sequelize, DataTypes) => {
       email: DataTypes.STRING,
       password: DataTypes.STRING,
       deletedAt: DataTypes.DATE,
+      token: DataTypes.STRING,
     },
     {
       sequelize,
@@ -46,7 +47,8 @@ module.exports = (sequelize, DataTypes) => {
   User.prototype.generateAuthToken = function () {
     const token = jwt.sign(
       { id: this.id },
-      process.env.transaction_tracker_jwtPrivateKey
+      process.env.transaction_tracker_jwtPrivateKey,
+      { expiresIn: "8h" }
     );
     return token;
   };
