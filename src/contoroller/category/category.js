@@ -36,47 +36,53 @@ class CategoryController {
   }
 
   async update(req, res) {
-    //Look up for the user by given id
-    const user = this.Category.find((u) => u.id === parseInt(req.params.id));
-    if (!user) return res.status(404).send("The user was not found");
-    //Validate received data to update a user
+    //Validate received data to update a category
     const { error } = this.validateCategory(req.body);
     if (error) return res.status(400).send(error.message);
-    //Update user with sent data
-    user.name = req.body.name;
-    res.send(user);
+    //Find the authorized user
+    const user = await this.User.findOne({ where: { id: req.user.id } });
+    //Prevent duplication in category table for a user
+    const existingCategory = await this.Category.findOne({
+      where: {
+        userId: user.id,
+        name: req.body.name,
+        type: req.body.type,
+      },
+    });
+    if (existingCategory) {
+      return res.send("this category has been defined");
+    }
+    // Look up for the category by given id
+    const category = await this.Category.findOne({
+      where: { id: req.params.id },
+    });
+    //Update category
+    category.name = req.body.name;
+    category.type = req.body.type;
+    category.save();
+    return res.send(_.pick(category, ["name", "type"]));
   }
 
   //** OK **//
   async delete(req, res) {
-    //Look up for the user by given id
-    const deletedAccount = await this.Category.destroy({
+    //Look up for the category by given id
+    const category = await this.Category.findOne({
       where: { id: req.params.id },
     });
-
-    return res.send("deleted");
+    category.deletedAt = new Date();
+    category.name = "deleted_" + category.name;
+    await category.save();
+    return res.send("Deleted");
   }
 
   //** OK **//
   async getSome(req, res) {
-    const user = await this.User.findOne({ where: { id: req.user.id } });
     const someCategories = await this.Category.findAll({
-      where: { type: req.params.type },
+      where: { type: req.params.type, deletedAt: null },
     });
     if (!someCategories)
-      return res.status(404).send("The categories was not found");
+      return res.status(404).send("The category was not found");
     return res.status(200).send(someCategories);
-  }
-
-  //** OK **//
-  async getAll(req, res) {
-    //Find the authorized user
-    const user = await this.User.findOne({ where: { id: req.user.id } });
-    const allCategories = await this.Category.findAll({
-      where: { userId: user.id, type: req.query.type },
-    });
-    console.log(req.params);
-    return res.status(200).send(allCategories);
   }
 }
 
