@@ -7,7 +7,7 @@ const Controller = require("../contoroller/user/user");
 const controller = new Controller(UserTable, userValidator);
 const reqHandler = require("../middleware/req-handel");
 
-router.post("/", reqHandler(controller.create.bind(controller)));
+// router.post("/", reqHandler(controller.create.bind(controller)));
 router.patch("/", auth, reqHandler(controller.update.bind(controller)));
 router.delete("/", auth, reqHandler(controller.delete.bind(controller)));
 router.get("/me", auth, reqHandler(controller.getOne.bind(controller)));
