@@ -6,36 +6,6 @@ class UserController {
     this.User = Users;
     this.validateUser = validator;
   }
-  //ok
-  async create(req, res) {
-    //Validting data received in body of request
-    const { error } = this.validateUser(req.body);
-    if (error) return res.status(400).send(error.message);
-    //De-structuring req.body
-    let { username, password, email } = req.body;
-    //Checking user existance with email
-    let user = await this.User.findOne({
-      where: { email },
-    });
-    if (user) return res.status(409).send("User already registered.");
-    //hashing the password
-    const salt = await bcrypt.genSalt(10);
-    password = await bcrypt.hash(password, salt);
-    //Save new user to the DB
-    user = await this.User.create({
-      username: username,
-      password: password,
-      email: email,
-    });
-    //Generatting token
-    const token = user.generateAuthToken();
-    user.token = token;
-    await user.save();
-    //Response to client
-    res
-      .header("x-auth-token", token)
-      .send(_.pick(user, ["id", "username", "email"]));
-  }
 
   //ok
   async update(req, res) {
