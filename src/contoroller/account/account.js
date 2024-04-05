@@ -3,14 +3,14 @@ const _ = require("lodash");
 class AccountController {
   constructor(Account, validator, User) {
     this.Account = Account;
-    this.validater = validator;
+    this.validator = validator;
     this.User = User;
   }
 
   //** OK **//
   async create(req, res) {
     //Validte received data to create a new account
-    const { error } = this.validater(req.body);
+    const { error } = this.validator(req.body);
     if (error) return res.status(400).send(error.message);
     //Find the authorized user
     const user = await this.User.findOne({ where: { id: req.user.id } });
@@ -36,7 +36,7 @@ class AccountController {
   //** OK **//
   async update(req, res) {
     //Validte received data to update the account
-    const { error } = this.validater(req.body);
+    const { error } = this.validator(req.body);
     if (error) return res.status(400).send(error.message);
     //Look up for the account by given id
     const account = await this.Account.findOne({

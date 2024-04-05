@@ -7,6 +7,7 @@ class CategoryController {
     this.User = User;
   }
 
+  //** OK **//
   async create(req, res) {
     //Validte received data to create a new category
     const { error } = this.validateCategory(req.body);
@@ -26,7 +27,7 @@ class CategoryController {
       return res.send("this category has been defined");
     }
 
-    //Create a new user with given data
+    //Create a new category with given data
     const category = await this.Category.create({
       name: req.body.name,
       type: req.body.type,
@@ -35,6 +36,7 @@ class CategoryController {
     res.status(200).send(category);
   }
 
+  //** OK **//
   async update(req, res) {
     //Validate received data to update a category
     const { error } = this.validateCategory(req.body);
