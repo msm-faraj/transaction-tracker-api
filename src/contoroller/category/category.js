@@ -24,7 +24,7 @@ class CategoryController {
       },
     });
     if (existingCategory) {
-      return res.send("this category has been defined");
+      return res.statu(409).send("this category has been defined");
     }
 
     //Create a new category with given data
@@ -41,19 +41,6 @@ class CategoryController {
     //Validate received data to update a category
     const { error } = this.validateCategory(req.body);
     if (error) return res.status(400).send(error.message);
-    //Find the authorized user
-    const user = await this.User.findOne({ where: { id: req.user.id } });
-    //Prevent duplication in category table for a user
-    const existingCategory = await this.Category.findOne({
-      where: {
-        userId: user.id,
-        name: req.body.name,
-        type: req.body.type,
-      },
-    });
-    if (existingCategory) {
-      return res.send("this category has been defined");
-    }
     // Look up for the category by given id
     const category = await this.Category.findOne({
       where: { id: req.params.id },
@@ -78,13 +65,13 @@ class CategoryController {
   }
 
   //** OK **//
-  async getSome(req, res) {
-    const someCategories = await this.Category.findAll({
-      where: { type: req.params.type, deletedAt: null },
+  async getAll(req, res) {
+    const allCategories = await this.Category.findAll({
+      where: { userId: req.user.id, type: req.query.type, deletedAt: null },
     });
-    if (!someCategories)
+    if (!allCategories)
       return res.status(404).send("The category was not found");
-    return res.status(200).send(someCategories);
+    return res.status(200).send(allCategories);
   }
 }
 

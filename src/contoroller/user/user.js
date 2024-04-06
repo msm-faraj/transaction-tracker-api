@@ -2,9 +2,10 @@ const _ = require("lodash");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 class UserController {
-  constructor(Users, validator) {
+  constructor(Users, userValidator, editUserValidator) {
     this.User = Users;
-    this.validateUser = validator;
+    this.validateUser = userValidator;
+    this.validateEditUser = editUserValidator;
   }
 
   //ok
@@ -15,15 +16,12 @@ class UserController {
       return res.status(404).send("user not founded");
     }
     //Validate received data to update a user
-    const { error } = this.validateUser(req.body);
+    const { error } = this.validateEditUser(req.body);
     if (error) return res.status(400).send(error.message);
     //Update user with sent data
-    let { email, username, password } = req.body;
-    const salt = await bcrypt.genSalt(10);
-    password = await bcrypt.hash(password, salt);
+    let { email, username } = req.body;
     user.username = username;
     user.email = email;
-    user.password = password;
     await user.save();
     return res.send(_.pick(user, ["id", "username", "email"]));
   }
@@ -35,7 +33,6 @@ class UserController {
     if (!user || user.deletedAt !== null) {
       return res.status(204);
     }
-    // if (user.deletedAt !== null) return res.send("Deleted");
     //Delete a user
     user.deletedAt = new Date();
     user.email = "deleted_" + user.email;
