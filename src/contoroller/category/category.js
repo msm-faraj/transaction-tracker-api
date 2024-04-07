@@ -17,7 +17,18 @@ class CategoryController {
       type: req.body.type,
       userId: req.user.id,
     });
-    res.status(200).send(category);
+    res.status(200).send(_.pick(category, ["name", "type"]));
+  }
+
+  async getAll(req, res) {
+    const whereClause = { userId: req.user.id, deletedAt: null };
+    if (req.query.type) {
+      whereClause.type = req.query.type;
+    }
+    const allCategories = await this.Category.findAll({
+      where: whereClause,
+    });
+    return res.status(200).send(allCategories);
   }
 
   async update(req, res) {
@@ -28,6 +39,7 @@ class CategoryController {
     const category = await this.Category.findOne({
       where: { id: req.params.id },
     });
+    if (!category) return res.status(404).send("Category not founded.");
     //Update the category
     category.name = req.body.name;
     category.type = req.body.type;
@@ -43,18 +55,7 @@ class CategoryController {
     category.deletedAt = new Date();
     category.name = "deleted_" + category.name;
     await category.save();
-    return res.send("Deleted");
-  }
-
-  async getAll(req, res) {
-    const whereClause = { userId: req.user.id, deletedAt: null };
-    if (req.query.type) {
-      whereClause.type = req.query.type;
-    }
-    const allCategories = await this.Category.findAll({
-      where: whereClause,
-    });
-    return res.status(200).send(allCategories);
+    return res.send(204).end();
   }
 }
 

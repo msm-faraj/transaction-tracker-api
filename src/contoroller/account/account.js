@@ -2,9 +2,9 @@ const _ = require("lodash");
 
 class AccountController {
   constructor(Account, validator, User) {
+    this.User = User;
     this.Account = Account;
     this.validateAccount = validator;
-    this.User = User;
   }
 
   async create(req, res) {
@@ -18,7 +18,15 @@ class AccountController {
       name: req.body.name,
       userId: user.id,
     });
-    res.status(200).send(account);
+    res.status(200).send(_.pick(account, ["name"]));
+  }
+
+  async getAll(req, res) {
+    const whereClause = { userId: req.user.id, deletedAt: null };
+    const allAccounts = await this.Account.findAll({
+      where: whereClause,
+    });
+    return res.status(200).send(allAccounts);
   }
 
   async update(req, res) {
@@ -29,6 +37,7 @@ class AccountController {
     const account = await this.Account.findOne({
       where: { id: req.params.id },
     });
+    if (!account) return res.status(404).send("Account not founded.");
     //Update the account
     account.name = req.body.name;
     await account.save();
@@ -43,15 +52,7 @@ class AccountController {
     account.deletedAt = new Date();
     account.name = "deleted_" + account.name;
     await account.save();
-    return res.send("Deleted");
-  }
-
-  async getAll(req, res) {
-    const whereClause = { userId: req.user.id, deletedAt: null };
-    const allAccounts = await this.Account.findAll({
-      where: whereClause,
-    });
-    return res.status(200).send(allAccounts);
+    return res.status(204).end();
   }
 }
 
