@@ -6,7 +6,7 @@ const UserTable = require("../models").User;
 const accountValidator = require("../modules/account-validator");
 const Controller = require("../contoroller/account/account");
 const controller = new Controller(AccountTable, accountValidator, UserTable);
-const reqHandler = require("../middleware/req-handel");
+const reqHandler = require("../middleware/req-handler");
 
 router.post("/", reqHandler(controller.create.bind(controller)));
 router.patch("/:id", reqHandler(controller.update.bind(controller)));

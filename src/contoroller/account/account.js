@@ -24,6 +24,7 @@ class AccountController {
       else {
         next(err);
       }
+      next(err);
     }
   }
 

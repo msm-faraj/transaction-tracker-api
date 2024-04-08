@@ -9,7 +9,7 @@ const usersRouter = require("./routes/users");
 const accountsRouter = require("./routes/accounts");
 const categoriesRouter = require("./routes/categories");
 const transactionsRouter = require("./routes/transactions");
-const errorHandler = require("./middleware/err-handel");
+const errorHandler = require("./middleware/err-handler");
 const app = express();
 const port = process.env.PORT || 3000;
 

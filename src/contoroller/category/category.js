@@ -25,6 +25,7 @@ class CategoryController {
       else {
         next(err);
       }
+      next(err);
     }
   }
 
