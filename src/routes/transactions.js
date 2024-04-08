@@ -8,11 +8,11 @@ const CategoryTable = require("../models").Category;
 const transactionValidator = require("../modules/transaction-validtor");
 const Controller = require("../contoroller/transaction/transaction");
 const controller = new Controller(
-  TransactionTable,
-  transactionValidator,
   UserTable,
   AccountTable,
-  CategoryTable
+  CategoryTable,
+  TransactionTable,
+  transactionValidator
 );
 const reqHandler = require("../middleware/req-handler");
 
