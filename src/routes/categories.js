@@ -6,7 +6,7 @@ const UserTable = require("../models").User;
 const categoryValidator = require("../modules/category-validator");
 const Controller = require("../contoroller/category/category");
 const controller = new Controller(CategoryTable, categoryValidator, UserTable);
-const reqHandler = require("../middleware/req-handel");
+const reqHandler = require("../middleware/req-handler");
 
 router.post("/", reqHandler(controller.create.bind(controller)));
 router.patch("/:id", reqHandler(controller.update.bind(controller)));

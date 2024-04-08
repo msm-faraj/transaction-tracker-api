@@ -6,7 +6,7 @@ const userValidator = require("../modules/user-validator");
 const editUserValidator = require("../modules/user-edit-validator");
 const Controller = require("../contoroller/user/user");
 const controller = new Controller(UserTable, editUserValidator);
-const reqHandler = require("../middleware/req-handel");
+const reqHandler = require("../middleware/req-handler");
 
 router.patch("/me", auth, reqHandler(controller.update.bind(controller)));
 router.delete("/me", auth, reqHandler(controller.delete.bind(controller)));

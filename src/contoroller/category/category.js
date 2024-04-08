@@ -7,17 +7,26 @@ class CategoryController {
     this.User = User;
   }
 
-  async create(req, res) {
+  async create(req, res, next) {
     //Validte received data to create a new category
     const { error } = this.validateCategory(req.body);
     if (error) return res.status(400).send(error.message);
     //Create a new category with given data
-    const category = await this.Category.create({
-      name: req.body.name,
-      type: req.body.type,
-      userId: req.user.id,
-    });
-    res.status(200).send(_.pick(category, ["name", "type"]));
+    try {
+      const category = await this.Category.create({
+        name: req.body.name,
+        type: req.body.type,
+        userId: req.user.id,
+      });
+      res.status(200).send(_.pick(category, ["name", "type"]));
+    } catch (err) {
+      if (err.name === "SequelizeUniqueConstraintError")
+        return res.status(400).send("This category has already been added.");
+      else {
+        next(err);
+      }
+      next(err);
+    }
   }
 
   async getAll(req, res) {

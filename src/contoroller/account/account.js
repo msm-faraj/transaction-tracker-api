@@ -7,18 +7,25 @@ class AccountController {
     this.validateAccount = validator;
   }
 
-  async create(req, res) {
+  async create(req, res, next) {
     //Validte received data to create a new account
     const { error } = this.validateAccount(req.body);
     if (error) return res.status(400).send(error.message);
-    //Find the authorized user
-    const user = await this.User.findOne({ where: { id: req.user.id } });
-    //Create a new user with given data
-    const account = await this.Account.create({
-      name: req.body.name,
-      userId: user.id,
-    });
-    res.status(200).send(_.pick(account, ["name"]));
+    //Create a new account with given data
+    try {
+      const account = await this.Account.create({
+        name: req.body.name,
+        userId: req.user.id,
+      });
+      res.status(200).send(_.pick(account, ["name"]));
+    } catch (err) {
+      if (err.name === "SequelizeUniqueConstraintError")
+        return res.status(400).send("This account has already been added.");
+      else {
+        next(err);
+      }
+      next(err);
+    }
   }
 
   async getAll(req, res) {
