@@ -21,9 +21,6 @@ class AccountController {
     } catch (err) {
       if (err.name === "SequelizeUniqueConstraintError")
         return res.status(400).send("This account has already been added.");
-      else {
-        next(err);
-      }
       next(err);
     }
   }

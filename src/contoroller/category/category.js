@@ -22,9 +22,6 @@ class CategoryController {
     } catch (err) {
       if (err.name === "SequelizeUniqueConstraintError")
         return res.status(400).send("This category has already been added.");
-      else {
-        next(err);
-      }
       next(err);
     }
   }
