@@ -9,6 +9,7 @@ const usersRouter = require("./routes/users");
 const accountsRouter = require("./routes/accounts");
 const categoriesRouter = require("./routes/categories");
 const transactionsRouter = require("./routes/transactions");
+const errorHandler = require("./middleware/err-handel");
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -26,6 +27,7 @@ app.use("/api/users", usersRouter);
 app.use("/api/accounts", auth, accountsRouter);
 app.use("/api/categories", auth, categoriesRouter);
 app.use("/api/transactions", auth, transactionsRouter);
+app.use(errorHandler);
 
 if (app.get("env") === "development") {
   console.log("Morgan enabled...");
