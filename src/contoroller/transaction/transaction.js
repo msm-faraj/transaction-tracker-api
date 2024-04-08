@@ -34,14 +34,14 @@ class TransactionController {
     }
     //Create a new transaction with given data
     const transaction = await this.Transaction.create({
+      type,
+      note,
+      date,
+      amount,
+      description,
+      userId: req.user.id,
       accountId: usedAccount.id,
       categoryId: usedCategory.id,
-      type: type,
-      note: note,
-      date: date,
-      amount: amount,
-      userId: user.id,
-      description: description,
     });
     return res.status(200).send(transaction);
   }
