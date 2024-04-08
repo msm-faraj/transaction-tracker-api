@@ -1,7 +1,6 @@
 const auth = require("../middleware/auth");
 const express = require("express");
 const router = express.Router();
-// const Transactions = require("../fake-data/Transactions");
 const TransactionTable = require("../models").Transaction;
 const UserTable = require("../models").User;
 const AccountTable = require("../models").Account;

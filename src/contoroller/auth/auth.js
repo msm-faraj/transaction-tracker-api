@@ -7,7 +7,7 @@ class AuthController {
     this.validateAuth = authValidator;
     this.validateUser = userValidator;
   }
-  //ok
+
   async register(req, res) {
     //Validting data received in body of request
     const { error } = this.validateUser(req.body);
@@ -18,7 +18,10 @@ class AuthController {
     let user = await this.User.findOne({
       where: { email },
     });
-    if (user) return res.status(409).send("User already registered.");
+    if (user)
+      return res
+        .status(409)
+        .send("User has already registered with this email address.");
     //hashing the password
     const salt = await bcrypt.genSalt(10);
     password = await bcrypt.hash(password, salt);
@@ -38,7 +41,6 @@ class AuthController {
       .send(_.pick(user, ["id", "username", "email"]));
   }
 
-  //ok
   async login(req, res) {
     //Validte received data to create a new user
     const { error } = this.validateAuth(req.body);

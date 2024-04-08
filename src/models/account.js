@@ -30,9 +30,12 @@ module.exports = (sequelize, DataTypes) => {
       },
       name: {
         type: DataTypes.STRING,
-        // unique: true,
+        unique: "unique_accounts_name_for_each_user",
       },
-      userId: DataTypes.UUID,
+      userId: {
+        type: DataTypes.UUID,
+        unique: "unique_accounts_name_for_each_user",
+      },
       deletedAt: DataTypes.DATE,
     },
     {

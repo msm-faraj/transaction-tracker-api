@@ -1,7 +1,6 @@
 const auth = require("../middleware/auth");
 const express = require("express");
 const router = express.Router();
-// const Accounts = require("../fake-data/Accounts");
 const AccountTable = require("../models").Account;
 const UserTable = require("../models").User;
 const accountValidator = require("../modules/account-validator");

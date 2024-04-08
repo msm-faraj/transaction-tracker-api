@@ -2,9 +2,8 @@ const _ = require("lodash");
 const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 class UserController {
-  constructor(Users, userValidator, editUserValidator) {
+  constructor(Users, editUserValidator) {
     this.User = Users;
-    this.validateUser = userValidator;
     this.validateEditUser = editUserValidator;
   }
 

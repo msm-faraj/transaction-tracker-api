@@ -30,10 +30,16 @@ module.exports = (sequelize, DataTypes) => {
       },
       name: {
         type: DataTypes.STRING,
-        // unique: true,
+        unique: "unique_categories_name_&_type_for_each_user",
       },
-      type: DataTypes.ENUM(["income", "expense"]),
-      userId: DataTypes.UUID,
+      userId: {
+        type: DataTypes.UUID,
+        unique: "unique_categories_name_&_type_for_each_user",
+      },
+      type: {
+        type: DataTypes.ENUM(["income", "expense"]),
+        unique: "unique_categories_name_&_type_for_each_user",
+      },
       deletedAt: DataTypes.DATE,
     },
     {
