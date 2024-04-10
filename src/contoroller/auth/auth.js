@@ -38,7 +38,7 @@ class AuthController {
     //Response to client
     return res
       .header("x-auth-token", token)
-      .send(_.pick(user, ["id", "username", "email"]));
+      .send(_.pick(user, ["username", "email"]));
   }
 
   async login(req, res) {
@@ -61,7 +61,7 @@ class AuthController {
     user.token = token;
     await user.save();
 
-    res.json({ accessToken: token });
+    res.send(_.pick(user, ["username", "email", "token"]));
   }
 }
 
