@@ -9,108 +9,154 @@ class TransactionController {
     this.validateTransaction = validator;
   }
 
-  async create(req, res) {
-    //Validte received data to create a new transaction
-    const { error } = this.validateTransaction(req.body);
-    if (error) return res.status(400).send(error.message);
-    const { type, account, category, amount, note, description, date } =
-      req.body;
-    //Find the used account for transaction
-    const usedAccount = await this.Account.findOne({
-      where: {
+  async create(req, res, next) {
+    try {
+      // Validate received data to create a new transaction
+      const { error } = this.validateTransaction(req.body);
+      if (error) return res.status(400).send(error.message);
+
+      const { type, account, category, amount, note, description, date } =
+        req.body;
+
+      // Find the used account for the transaction
+      const usedAccount = await this.Account.findOne({
+        where: {
+          userId: req.user.id,
+          name: account,
+        },
+      });
+
+      if (!usedAccount) {
+        return res.status(404).send("Account not found.");
+      }
+
+      // Find the used category for the transaction
+      const usedCategory = await this.Category.findOne({
+        where: { name: category },
+      });
+
+      if (!usedCategory) {
+        return res.status(404).send("Category not found.");
+      }
+
+      // Create a new transaction with given data
+      const transaction = await this.Transaction.create({
+        type,
+        note,
+        date,
+        amount,
+        description,
         userId: req.user.id,
-        name: account,
-      },
-    });
-    if (!usedAccount) {
-      return res.status(404).send("Account not founded.");
+        accountId: usedAccount.id,
+        categoryId: usedCategory.id,
+      });
+
+      return res.status(200).send(transaction);
+    } catch (error) {
+      // Pass the error to the next middleware for centralized error handling
+      next(error);
     }
-    //Find the used category for transaction
-    const usedCategory = await this.Category.findOne({
-      where: { name: category },
-    });
-    if (!usedCategory) {
-      return res.status(404).send("Category not founded.");
-    }
-    //Create a new transaction with given data
-    const transaction = await this.Transaction.create({
-      type,
-      note,
-      date,
-      amount,
-      description,
-      userId: req.user.id,
-      accountId: usedAccount.id,
-      categoryId: usedCategory.id,
-    });
-    return res.status(200).send(transaction);
   }
 
-  async getAll(req, res) {
-    const allTransactions = await this.Transaction.findAll({
-      where: { userId: req.user.id, deletedAt: null },
-    });
-    return res.status(200).send(allTransactions);
+  async getAll(req, res, next) {
+    try {
+      const allTransactions = await this.Transaction.findAll({
+        where: { userId: req.user.id, deletedAt: null },
+      });
+
+      return res.status(200).send(allTransactions);
+    } catch (error) {
+      // Handle database operation errors
+      next(error);
+    }
   }
 
-  async update(req, res) {
-    //Validte received data to create a new transaction
-    const { error } = this.validateTransaction(req.body);
-    if (error) return res.status(400).send(error.message);
-    const { type, account, category, amount, note, description, date } =
-      req.body;
-    //Find the used account for transaction
-    const usedAccount = await this.Account.findOne({
-      where: {
-        userId: req.user.id,
-        name: account,
-      },
-    });
-    if (!usedAccount) {
-      return res.send("Account not founded.");
+  async update(req, res, next) {
+    try {
+      // Validate received data to update a transaction
+      const { error } = this.validateTransaction(req.body);
+      if (error) return res.status(400).send(error.message);
+
+      const { type, account, category, amount, note, description, date } =
+        req.body;
+
+      // Find the used account for the transaction
+      const usedAccount = await this.Account.findOne({
+        where: {
+          userId: req.user.id,
+          name: account,
+        },
+      });
+
+      if (!usedAccount) {
+        return res.status(404).send("Account not found.");
+      }
+
+      // Find the used category for the transaction
+      const usedCategory = await this.Category.findOne({
+        where: { name: category },
+      });
+
+      if (!usedCategory) {
+        return res.status(404).send("Category not found.");
+      }
+
+      // Look up for the transaction by given id
+      const transaction = await this.Transaction.findOne({
+        where: { id: req.params.id },
+      });
+
+      transaction.type = type;
+      transaction.note = note;
+      transaction.amount = amount;
+      transaction.accountId = usedAccount.id;
+      transaction.categoryId = usedCategory.id;
+      transaction.description = description;
+      transaction.date = date;
+
+      await transaction.save();
+
+      return res
+        .status(200)
+        .send(
+          _.pick(transaction, [
+            "type",
+            "date",
+            "note",
+            "amount",
+            "userId",
+            "accountId",
+            "categoryId",
+            "description",
+          ])
+        );
+    } catch (error) {
+      // Handle database operation errors
+      next(error);
     }
-    //Find the used category for transaction
-    const usedCategory = await this.Category.findOne({
-      where: { name: category },
-    });
-    if (!usedCategory) {
-      return res.send("category not founded.");
-    }
-    //Look up for the transaction by given id
-    const transaction = await this.Transaction.findOne({
-      where: { id: req.params.id },
-    });
-    transaction.type = type;
-    transaction.note = note;
-    transaction.amount = amount;
-    transaction.accountId = usedAccount.id;
-    transaction.categoryId = usedCategory.id;
-    transaction.description = description;
-    transaction.date = date;
-    await transaction.save();
-    return res.send(
-      _.pick(transaction, [
-        "type",
-        "date",
-        "note",
-        "amount",
-        "userId",
-        "accountId",
-        "categoryId",
-        "description",
-      ])
-    );
   }
 
-  async delete(req, res) {
-    //Look up for the transaction by given id
-    const transaction = await this.Transaction.findOne({
-      where: { id: req.params.id },
-    });
-    transaction.deletedAt = new Date();
-    transaction.name = "deleted_" + transaction.name;
-    await transaction.save();
-    return res.status(204).end();
+  async delete(req, res, next) {
+    try {
+      // Look up for the transaction by given id
+      const transaction = await this.Transaction.findOne({
+        where: { id: req.params.id },
+      });
+
+      if (!transaction) {
+        return res.status(404).send("Transaction not found.");
+      }
+
+      transaction.deletedAt = new Date();
+      transaction.name = "deleted_" + transaction.name;
+
+      await transaction.save();
+
+      return res.status(200).end();
+    } catch (error) {
+      // Handle database operation errors
+      next(error);
+    }
   }
 }
 
