@@ -14,12 +14,12 @@ module.exports = (sequelize, DataTypes) => {
         onDelete: "cascade",
       });
       Transaction.belongsTo(models.Account, {
-        as: "acount",
+        as: "account",
         foreignKey: "accountId",
         onDelete: "cascade",
       });
       Transaction.belongsTo(models.Category, {
-        as: "account",
+        as: "category",
         foreignKey: "categoryId",
         onDelete: "cascade",
       });
