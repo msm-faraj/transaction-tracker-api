@@ -54,11 +54,20 @@ class TransactionController {
   }
 
   async getAll(req, res, next) {
-    const allTransactions = await this.Transaction.findAll({
-      where: { userId: req.user.id, deletedAt: null },
-    });
+    try {
+      const allTransactions = await this.Transaction.findAll({
+        where: { userId: req.user.id, deletedAt: null },
+        include: [
+          { model: this.Account, as: "account" },
+          { model: this.Category, as: "category" },
+        ],
+      });
 
-    return res.status(200).send(allTransactions);
+      return res.status(200).send(allTransactions);
+    } catch (error) {
+      // Handle database operation errors
+      next(error);
+    }
   }
 
   async update(req, res, next) {
