@@ -1,19 +1,41 @@
 const AccountController = require("./account");
-const { Sequelize } = require("sequelize"); // Assuming Sequelize is being used for database operations
+describe("AccountController", () => {
+  let User = {};
+  let Account = {};
+  let validate = jest.fn();
+  let accountController;
+
+  accountController = new AccountController(Account, User, validate);
+
+  it("should initialize class members-user correctly", () => {
+    expect(accountController.User).toBe(User);
+  });
+  it("should initialize class members-account correctly", () => {
+    expect(accountController.Account).toBe(Account);
+  });
+  it("should initialize class members-validateAccount correctly", () => {
+    expect(accountController.validateAccount).toBe(validate);
+  });
+});
 
 describe("AccountController", () => {
+  let req,
+    res,
+    next,
+    validationError,
+    mockValidateAccount,
+    mockUser,
+    mockAccountFindAll,
+    mockAccount,
+    accountController,
+    mockResponseEnd,
+    mockResponseSend,
+    mockResponseStatus;
   describe("create", () => {
     describe("when validateAccount throws an error", () => {
-      let req,
-        res,
-        next,
-        validationError,
-        mockValidateAccount,
-        mockResponseSend;
-
       beforeEach(async () => {
         req = { body: { name: "TestAccountName" }, user: { id: 123 } };
-        validationError = { message: "TestErrorMessage" };
+        validationError = new Error("TestErrorMessage");
         mockValidateAccount = jest
           .fn()
           .mockReturnValueOnce({ error: validationError });
@@ -44,14 +66,6 @@ describe("AccountController", () => {
     });
 
     describe("when validateAccount does not throw an error", () => {
-      let req,
-        res,
-        next,
-        mockAccount,
-        mockValidateAccount,
-        mockResponseSend,
-        accountController;
-
       beforeEach(async () => {
         req = { body: { name: "TestAccountName" }, user: { id: 123 } };
         mockAccount = { name: "TestAccountName" };
@@ -96,8 +110,6 @@ describe("AccountController", () => {
 
   describe("getAll", () => {
     describe("when database operation succeeds", () => {
-      let req, res, next, mockUser, mockAccountFindAll, mockResponseSend;
-
       beforeEach(async () => {
         req = { user: { id: "user_id" } };
         mockUser = { id: "user_id" };
@@ -138,8 +150,6 @@ describe("AccountController", () => {
 
   describe("update", () => {
     describe("when validation fails", () => {
-      let req, res, next, mockValidateAccount, mockResponseSend;
-
       beforeEach(async () => {
         req = { body: { name: "TestAccountName" } };
         mockValidateAccount = jest
@@ -172,8 +182,6 @@ describe("AccountController", () => {
     });
 
     describe("when account is not found", () => {
-      let req, res, next, mockValidateAccount, mockAccount, mockResponseSend;
-
       beforeEach(async () => {
         req = { body: { name: "TestAccountName" }, params: { id: "123456" } };
         mockValidateAccount = jest.fn().mockReturnValueOnce({ error: null });
@@ -210,14 +218,6 @@ describe("AccountController", () => {
     });
 
     describe("when update is successful", () => {
-      let req,
-        res,
-        next,
-        mockValidateAccount,
-        mockAccount,
-        mockResponseSend,
-        mockResponseStatus;
-
       beforeEach(async () => {
         req = { body: { name: "TestAccountName" }, params: { id: "123456" } };
         mockValidateAccount = jest.fn().mockReturnValueOnce({ error: null });
@@ -276,8 +276,6 @@ describe("AccountController", () => {
 
   describe("delete", () => {
     describe("when account is found and deleted successfully", () => {
-      let req, res, next, mockAccount, mockResponseEnd;
-
       beforeEach(async () => {
         req = { params: { id: "123456" } };
         // Mocking the successful finding of the account
@@ -323,8 +321,6 @@ describe("AccountController", () => {
     });
 
     describe("when account is not found", () => {
-      let req, res, next, mockAccount, mockResponseSend;
-
       beforeEach(async () => {
         req = { params: { id: "123456" } };
         // Mocking that account is not found
