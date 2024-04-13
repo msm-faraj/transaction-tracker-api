@@ -13,6 +13,7 @@ module.exports = function (req, res, next) {
     req.user = decoded;
     next();
   } catch (ex) {
-    res.status(400).send("Invalid token.");
+    // Passing the error to the next middleware for centralized error handling
+    next(ex);
   }
 };

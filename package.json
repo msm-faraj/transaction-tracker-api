@@ -3,7 +3,7 @@
     "bcrypt": "5.1.1",
     "cors": "2.8.5",
     "dotenv": "16.4.5",
-    "express": "4.18.2",
+    "express": "4.19.2",
     "helmet": "7.1.0",
     "joi": "17.12.1",
     "jsonwebtoken": "9.0.2",
@@ -23,7 +23,7 @@
     "dev": "cd src && npx sequelize-cli db:migrate && cd .. && nodemon .",
     "start": "node .",
     "start:watch": "nodemon .",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "jest"
   },
   "engines": {
     "node": "21.6.0"
@@ -31,7 +31,12 @@
   "keywords": [],
   "author": "msm-faraj",
   "license": "ISC",
+  "jest": {
+    "collectCoverage": true,
+    "testEnvironment": "node"
+  },
   "devDependencies": {
+    "jest": "29.7.0",
     "sequelize-cli": "6.6.2"
   }
 }
